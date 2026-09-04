@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  username  String   @unique
+  password  String
+  email     String?
+  isHidden  Boolean  @default(false)
+  role      Role     @default(USER)
+  records   Record[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  USER
+  LEADER
+}
+
+model Record {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month      Int      // 1-12
+  year       Int      
+  category   Category // PRINT, COPY, SCAN
+  colorMode  ColorMode // BW, COLOR
+  
+  // Weekly inputs (absolute counts from machine)
+  initial    Int?     // baseline at week 0 (e.g. W4 Jul)
+  week1      Int?
+  week2      Int?
+  week3      Int?
+  week4      Int?
+  week5      Int?
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([userId, month, year, category, colorMode])
+}
+
+enum Category {
+  PRINT
+  COPY
+  SCAN
+}
+
+enum ColorMode {
+  BW
+  COLOR
+  NONE // For SCAN maybe, though scan can be color/bw
+}
+
+model ReportFile {
+  id        String   @id @default(cuid())
+  month     Int
+  year      Int
+  category  Category
+  week      String
+  fileUrl   String
+  createdAt DateTime @default(now())
+  
+  @@unique([month, year, category, week])
+}
