@@ -416,7 +416,7 @@ export default function DataEntryPage() {
             <button 
               onClick={handleSave} 
               disabled={saving || loading}
-              className="w-full md:w-auto flex justify-center items-center px-6 py-2.5 bg-zinc-900 dark:bg-zinc-100 text-white font-bold rounded-sm border-2 border-primary-600 hover:bg-primary-700 hover:border-primary-700 disabled:opacity-50 transition-colors uppercase tracking-widest text-xs"
+              className="w-full md:w-auto flex justify-center items-center px-6 py-2.5 bg-primary-600 text-white font-bold rounded-sm border-2 border-primary-600 hover:bg-primary-700 hover:border-primary-700 disabled:opacity-50 transition-colors uppercase tracking-widest text-xs"
             >
               {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
               Save Data
