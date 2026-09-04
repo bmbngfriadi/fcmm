@@ -115,12 +115,12 @@ export default function UsersPage() {
               <th className="px-6 py-4 text-right text-xs font-bold text-zinc-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-gray-700">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-zinc-900 dark:text-zinc-100">{user.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-gray-400">{user.username}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-gray-400">{user.email || "-"}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">{user.username}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">{user.email || "-"}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'}`}>
                     {user.role}
@@ -146,14 +146,14 @@ export default function UsersPage() {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{user.name}</h3>
-                  <p className="text-sm text-zinc-500 dark:text-gray-400">@{user.username}</p>
-                  {user.email && <p className="text-sm text-zinc-500 dark:text-gray-400 mt-1">{user.email}</p>}
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">@{user.username}</p>
+                  {user.email && <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">{user.email}</p>}
                 </div>
                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'}`}>
                   {user.role}
                 </span>
               </div>
-              <div className="flex justify-end gap-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+              <div className="flex justify-end gap-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
                 <button onClick={() => handleOpenModal(user)} className="flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg text-sm font-semibold transition-colors">
                   <Edit className="w-4 h-4 mr-2" />
                   Edit
@@ -174,36 +174,36 @@ export default function UsersPage() {
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
               <div className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200" onClick={() => setShowModal(false)}></div>
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-              <div className="relative z-10 inline-block align-bottom bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100 dark:border-gray-700">
+              <div className="relative z-10 inline-block align-bottom bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-zinc-200 dark:border-zinc-800">
                 <form onSubmit={handleSubmit}>
                   <div className="px-6 pt-6 pb-4">
                     <div className="flex justify-between items-center mb-6">
                       <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest" id="modal-title">
                         {isEditing ? "Edit User" : "Add User"}
                       </h3>
-                      <button type="button" onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-gray-700 p-1.5 rounded-full">
+                      <button type="button" onClick={() => setShowModal(false)} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-full">
                         <X className="w-5 h-5" />
                       </button>
                     </div>
                     <div className="space-y-5">
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Name</label>
+                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Name</label>
                         <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Username</label>
+                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Username</label>
                         <input type="text" required value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Email (Optional)</label>
+                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Email (Optional)</label>
                         <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Password <span className="text-gray-400 font-normal">{isEditing && "(Leave blank to keep current)"}</span></label>
+                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Password <span className="text-gray-400 font-normal">{isEditing && "(Leave blank to keep current)"}</span></label>
                         <input type="password" required={!isEditing} value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Role</label>
+                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Role</label>
                         <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider">
                           <option value="USER">User</option>
                           <option value="LEADER">Leader</option>
@@ -212,7 +212,7 @@ export default function UsersPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t border-gray-100 dark:border-gray-700">
+                  <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t border-zinc-200 dark:border-zinc-800">
                     <button type="submit" className="w-full md:w-auto inline-flex justify-center rounded-xl border border-2 border-primary-600 px-6 py-2.5 bg-primary-600 text-xs uppercase tracking-widest font-black text-white hover:bg-primary-700 hover:border-primary-700 focus:outline-none transition-colors">
                       {isEditing ? 'Save Changes' : 'Create User'}
                     </button>

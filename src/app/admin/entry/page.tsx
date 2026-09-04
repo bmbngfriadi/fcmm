@@ -318,7 +318,7 @@ export default function DataEntryPage() {
         onChange={(e) => handleInputChange(userId, activeCategory, color, field, e.target.value)} 
         onKeyDown={(e) => handleKeyDown(e, idx, color, field)}
         onWheel={handleWheel}
-        className={`w-[70px] px-1 py-1 text-right border border-zinc-400 dark:border-zinc-600 rounded text-sm bg-white text-gray-900 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary-500 ${(isHidden || isReadOnly) ? 'opacity-50 bg-gray-100 cursor-not-allowed dark:bg-gray-800' : ''}`} 
+        className={`w-[70px] px-1 py-1 text-right border border-zinc-300 dark:border-zinc-700 rounded text-sm bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary-500 ${(isHidden || isReadOnly) ? 'opacity-50 bg-zinc-100 cursor-not-allowed dark:bg-zinc-900' : ''}`} 
       />
     );
   };
@@ -444,7 +444,7 @@ export default function DataEntryPage() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`relative flex-1 py-3 mx-1 my-1 rounded-sm text-center font-black text-xs uppercase tracking-widest transition-all overflow-hidden ${activeCategory === cat ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-2 border-zinc-900 dark:border-zinc-100' : 'bg-transparent text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 border-2 border-transparent'}`}
+              className={`relative flex-1 py-3 mx-1 my-1 rounded-sm text-center font-black text-xs uppercase tracking-widest transition-all overflow-hidden ${activeCategory === cat ? 'bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 border-2 border-zinc-900 dark:border-zinc-100' : 'bg-transparent text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 border-2 border-transparent'}`}
             >
               <span className="relative z-10">{formatCategory(cat)}</span>
             </button>
@@ -458,17 +458,17 @@ export default function DataEntryPage() {
             <table className="min-w-max border-collapse border border-zinc-300 dark:border-zinc-700 text-sm">
               <thead>
                 {/* Header Row 1 */}
-                <tr className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 divide-x divide-zinc-800 dark:divide-zinc-200">
-                  <th rowSpan={3} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky left-0 z-20 bg-zinc-900 dark:bg-zinc-100 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">
+                <tr className="bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 divide-x divide-zinc-800 dark:divide-zinc-200">
+                  <th rowSpan={3} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky left-0 z-20 bg-zinc-900 dark:bg-zinc-950 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">
                     {session?.user?.role === "ADMIN" ? "Sel" : "No"}
                   </th>
                   {session?.user?.role === "ADMIN" && (
-                    <th rowSpan={3} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky left-[36px] z-20 bg-zinc-900 dark:bg-zinc-100 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">Hide</th>
+                    <th rowSpan={3} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky left-[36px] z-20 bg-zinc-900 dark:bg-zinc-950 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">Hide</th>
                   )}
-                  <th rowSpan={3} className={`px-4 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-20 bg-zinc-900 dark:bg-zinc-100 shadow-[2px_0_5px_rgba(0,0,0,0.1)]`}>Username</th>
+                  <th rowSpan={3} className={`px-4 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-20 bg-zinc-900 dark:bg-zinc-950 shadow-[2px_0_5px_rgba(0,0,0,0.1)]`}>Username</th>
                   <th rowSpan={3} className="px-3 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 hidden md:table-cell">User ID</th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 text-black">
+                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
                     <div className="flex items-center justify-center gap-1.5">
                       <span>Initial (Baseline)</span>
                       {!isReadOnly && <button onClick={() => { setSelectedWeek("Initial"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload Initial Reference"><UploadCloud size={14}/></button>}
@@ -476,7 +476,7 @@ export default function DataEntryPage() {
                     </div>
                   </th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 text-black">
+                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
                     <div className="flex items-center justify-center gap-1.5">
                       <span>W1</span>
                       {!isReadOnly && <button onClick={() => { setSelectedWeek("W1"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W1 Reference"><UploadCloud size={14}/></button>}
@@ -485,7 +485,7 @@ export default function DataEntryPage() {
                   </th>
                   <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W1</th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 text-black">
+                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
                     <div className="flex items-center justify-center gap-1.5">
                       <span>W2</span>
                       {!isReadOnly && <button onClick={() => { setSelectedWeek("W2"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W2 Reference"><UploadCloud size={14}/></button>}
@@ -494,7 +494,7 @@ export default function DataEntryPage() {
                   </th>
                   <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W2</th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 text-black">
+                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
                     <div className="flex items-center justify-center gap-1.5">
                       <span>W3</span>
                       {!isReadOnly && <button onClick={() => { setSelectedWeek("W3"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W3 Reference"><UploadCloud size={14}/></button>}
@@ -503,7 +503,7 @@ export default function DataEntryPage() {
                   </th>
                   <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W3</th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 text-black">
+                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
                     <div className="flex items-center justify-center gap-1.5">
                       <span>W4</span>
                       {!isReadOnly && <button onClick={() => { setSelectedWeek("W4"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W4 Reference"><UploadCloud size={14}/></button>}
@@ -512,7 +512,7 @@ export default function DataEntryPage() {
                   </th>
                   <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W4</th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 text-black">
+                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
                     <div className="flex items-center justify-center gap-1.5">
                       <span>W5</span>
                       {!isReadOnly && <button onClick={() => { setSelectedWeek("W5"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W5 Reference"><UploadCloud size={14}/></button>}
@@ -526,7 +526,7 @@ export default function DataEntryPage() {
                 {/* Header Row 2 - B&W / Color */}
                 <tr className="bg-primary-200 dark:bg-primary-900 text-black dark:text-white divide-x divide-gray-300 dark:divide-gray-600">
                   {Array.from({length: 12}).map((_, i) => (
-                    <td key={i} colSpan={2} className="p-0 border-b border-zinc-400 dark:border-zinc-600">
+                    <td key={i} colSpan={2} className="p-0 border-b border-zinc-300 dark:border-zinc-700">
                       <div className="flex divide-x divide-gray-300 dark:divide-gray-600">
                         <div className="flex-1 px-1 py-1 text-center font-semibold text-[11px]">Black & White</div>
                         <div className="flex-1 px-1 py-1 text-center font-semibold text-[11px]">Color</div>
@@ -535,10 +535,10 @@ export default function DataEntryPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-white dark:bg-zinc-900 divide-y divide-zinc-200 dark:divide-zinc-800">
                 {targetUsers.filter(u => !(isLeader && u.isHidden)).map((u, idx) => (
-                  <tr key={u.id || `user-${idx}`} className={`hover:bg-gray-50 dark:hover:bg-gray-700 divide-x divide-gray-200 dark:divide-gray-700 transition-colors ${u.isHidden ? 'opacity-60 bg-zinc-200 dark:bg-zinc-800' : ''}`}>
-                    <td className="px-2 py-1 text-center text-gray-500 sticky left-0 z-10 bg-white dark:bg-gray-800 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
+                  <tr key={u.id || `user-${idx}`} className={`hover:bg-zinc-50 dark:hover:bg-zinc-800 divide-x divide-zinc-200 dark:divide-zinc-800 transition-colors ${u.isHidden ? 'opacity-60 bg-zinc-200 dark:bg-zinc-800' : ''}`}>
+                    <td className="px-2 py-1 text-center text-zinc-500 sticky left-0 z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
                       {session?.user?.role === "ADMIN" ? (
                         <input type="checkbox" checked={selectedUsers.includes(u.id)} onChange={() => toggleUserSelection(u.id)} className="w-4 h-4 text-primary-600 rounded border-gray-300 cursor-pointer" />
                       ) : (
@@ -546,7 +546,7 @@ export default function DataEntryPage() {
                       )}
                     </td>
                     {session?.user?.role === "ADMIN" && (
-                      <td className="px-2 py-1 text-center sticky left-[36px] z-10 bg-white dark:bg-gray-800 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
+                      <td className="px-2 py-1 text-center sticky left-[36px] z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
                         {togglingHide === u.id ? (
                           <Loader2 className="w-4 h-4 animate-spin mx-auto text-primary-500" />
                         ) : (
@@ -554,10 +554,10 @@ export default function DataEntryPage() {
                         )}
                       </td>
                     )}
-                    <td className={`px-3 py-1 font-medium text-gray-900 dark:text-white whitespace-nowrap sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-10 bg-white dark:bg-gray-800 shadow-[2px_0_5px_rgba(0,0,0,0.05)]`}>
+                    <td className={`px-3 py-1 font-medium text-zinc-900 dark:text-zinc-100 whitespace-nowrap sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_rgba(0,0,0,0.05)]`}>
                       {u.name} {u.isHidden && <span className="text-xs text-red-500 ml-1">(Hidden)</span>}
                     </td>
-                    <td className="px-2 py-1 text-gray-500 hidden md:table-cell">{u.username}</td>
+                    <td className="px-2 py-1 text-zinc-500 hidden md:table-cell">{u.username}</td>
                     
                     {/* Initial */}
                     <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "initial")}</td>
@@ -599,13 +599,13 @@ export default function DataEntryPage() {
                     <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "COLOR", "week5", "week4")}</td>
                     
                     {/* Total Bulan */}
-                    <td className="px-2 py-1 text-right font-bold text-red-600 bg-red-50 dark:bg-red-900/20">{renderTotalMonth(u.id, "BW")}</td>
-                    <td className="px-2 py-1 text-right font-bold text-red-600 bg-red-50 dark:bg-red-900/20">{renderTotalMonth(u.id, "COLOR")}</td>
+                    <td className="px-2 py-1 text-right font-bold text-red-600 bg-red-50 dark:bg-red-950">{renderTotalMonth(u.id, "BW")}</td>
+                    <td className="px-2 py-1 text-right font-bold text-red-600 bg-red-50 dark:bg-red-950">{renderTotalMonth(u.id, "COLOR")}</td>
                   </tr>
                 ))}
                 
                 {/* Total Row */}
-                <tr className="bg-yellow-400 text-black font-bold divide-x divide-gray-300">
+                <tr className="bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white font-bold divide-x divide-gray-300">
                   <td className="px-4 py-2 text-right uppercase sticky left-0 z-10 bg-yellow-400 shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
                   {session?.user?.role === "ADMIN" && (
                     <td className="px-4 py-2 text-right uppercase sticky left-[36px] z-10 bg-yellow-400 shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
@@ -668,30 +668,30 @@ export default function DataEntryPage() {
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
               <div className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200" onClick={() => setShowUploadModal(false)}></div>
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-              <div className="relative z-10 inline-block align-bottom bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100 dark:border-gray-700">
+              <div className="relative z-10 inline-block align-bottom bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-zinc-200 dark:border-zinc-800">
                 <form onSubmit={handleFileUpload}>
                   <div className="px-6 pt-6 pb-4">
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                      <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
                         Upload Reference File
                       </h3>
                       <button type="button" onClick={() => setShowUploadModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-gray-700 p-1.5 rounded-full">
                         <X className="w-5 h-5" />
                       </button>
                     </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Upload a print/scan file as the reference for <strong>{selectedWeek}</strong> in {formatCategory(activeCategory)}, Month {month}, {year}.</p>
+                    <p className="text-sm text-zinc-500 dark:text-gray-400 mb-4">Upload a print/scan file as the reference for <strong>{selectedWeek}</strong> in {formatCategory(activeCategory)}, Month {month}, {year}.</p>
                     <div className="space-y-5">
                       <div>
-                        <input type="file" required accept="image/*,.pdf" onChange={(e) => setFileToUpload(e.target.files?.[0] || null)} className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/20 dark:file:text-primary-400 dark:hover:file:bg-primary-900/40" />
+                        <input type="file" required accept="image/*,.pdf" onChange={(e) => setFileToUpload(e.target.files?.[0] || null)} className="block w-full text-sm text-zinc-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/20 dark:file:text-primary-400 dark:hover:file:bg-primary-900/40" />
                       </div>
                     </div>
                   </div>
-                  <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t border-gray-100 dark:border-gray-700">
+                  <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t border-zinc-200 dark:border-zinc-800">
                     <button type="submit" disabled={uploading} className="w-full md:w-auto inline-flex justify-center items-center rounded-xl border border-transparent shadow-md shadow-primary-500/20 px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 text-sm font-bold text-white hover:from-primary-700 hover:to-primary-600 focus:outline-none transition-all disabled:opacity-50">
                       {uploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <UploadCloud className="w-4 h-4 mr-2" />}
                       {uploading ? 'Uploading...' : 'Upload'}
                     </button>
-                    <button type="button" onClick={() => setShowUploadModal(false)} className="w-full md:w-auto inline-flex justify-center rounded-xl border border-zinc-300 dark:border-zinc-700 shadow-sm px-6 py-2.5 bg-white dark:bg-gray-800 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none transition-all">
+                    <button type="button" onClick={() => setShowUploadModal(false)} className="w-full md:w-auto inline-flex justify-center rounded-xl border border-zinc-300 dark:border-zinc-700 shadow-sm px-6 py-2.5 bg-white dark:bg-zinc-900 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none transition-all">
                       Cancel
                     </button>
                   </div>
@@ -706,9 +706,9 @@ export default function DataEntryPage() {
             <div className="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
               <div className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200" onClick={() => setShowViewModal(false)}></div>
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-              <div className="relative z-10 inline-block align-middle bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:max-w-4xl sm:w-full border border-gray-100 dark:border-gray-700">
-                <div className="px-6 py-4 flex justify-between items-center border-b border-gray-100 dark:border-gray-700">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Reference File - {selectedWeek}</h3>
+              <div className="relative z-10 inline-block align-middle bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:max-w-4xl sm:w-full border border-zinc-200 dark:border-zinc-800">
+                <div className="px-6 py-4 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800">
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Reference File - {selectedWeek}</h3>
                   <button type="button" onClick={() => setShowViewModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-gray-700 p-1.5 rounded-full">
                     <X className="w-5 h-5" />
                   </button>
