@@ -82,7 +82,7 @@ export function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean, setIsOpen?: (
           </div>
         </div>
         <button
-          onClick={() => signOut()}
+          onClick={() => signOut({ callbackUrl: '/fcmm-system/login' })}
           className="flex items-center justify-center w-full px-2 py-3 text-xs font-bold text-red-500 border-2 border-zinc-800 hover:bg-red-950 hover:border-red-900 hover:text-red-400 rounded-sm transition-colors uppercase tracking-widest"
         >
           <LogOut className="mr-2 h-4 w-4" />
