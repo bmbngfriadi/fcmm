@@ -43,8 +43,8 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   const monthlyMap: Record<number, { BW: number, COLOR: number }> = {};
   for (let i = 1; i <= 12; i++) monthlyMap[i] = { BW: 0, COLOR: 0 };
 
-  const weeklyMap: Record<number, { PRINT: number, COPY: number }> = {};
-  for (let i = 1; i <= 5; i++) weeklyMap[i] = { PRINT: 0, COPY: 0 };
+  const weeklyMap: Record<number, { PRINT: number, COPY: number, BW: number, COLOR: number }> = {};
+  for (let i = 1; i <= 5; i++) weeklyMap[i] = { PRINT: 0, COPY: 0, BW: 0, COLOR: 0 };
 
   let totalBW = 0, totalColor = 0, totalPrint = 0, totalCopy = 0;
   let totalUsageCurrentMonth = 0;
@@ -67,6 +67,8 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
         const wUsage = calculateWeekUsage(r, w);
         if (r.category === "PRINT") weeklyMap[w].PRINT += wUsage;
         if (r.category === "COPY") weeklyMap[w].COPY += wUsage;
+        if (r.colorMode === "BW") weeklyMap[w].BW += wUsage;
+        if (r.colorMode === "COLOR") weeklyMap[w].COLOR += wUsage;
       }
     }
 
@@ -153,7 +155,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     background: { color: "FFFFFF" },
     objects: [
       { rect: { x: 0, y: 0, w: "100%", h: 0.75, fill: { color: "b52025" } } }, // Dark Red Header
-      { image: { x: 0.2, y: 0.1, w: 0.67, h: 0.55, path: "public/logo.png" } }, // Logo
+      { image: { x: 0.2, y: 0.1, w: 0.67, h: 0.55, path: "public/logo-sm.png" } }, // Logo
       { text: { text: "FCMM Operational Report", options: { x: 1.2, y: 0.15, w: 4, h: 0.5, color: "FFFFFF", fontSize: 16, bold: true } } },
       { text: { text: `Generated: ${new Date().toLocaleDateString()}`, options: { x: "70%", y: 0.2, w: 2.5, h: 0.5, color: "FFFFFF", fontSize: 10, align: "right" } } },
       { text: { text: "Page", options: { x: 8.5, y: 5.2, w: 0.8, h: 0.3, color: "888888", fontSize: 12, align: "right" } } }
@@ -164,7 +166,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   // Slide 1: Title
   const slide1 = pptx.addSlide();
   slide1.background = { color: "b52025" }; // Dark Red background
-  slide1.addImage({ path: "public/logo.png", x: 3.5, y: 0.2, w: 3, h: 2.47 }); // Fixed aspect ratio
+  slide1.addImage({ path: "public/logo-sm.png", x: 3.5, y: 0.2, w: 3, h: 2.47 }); // Fixed aspect ratio
   slide1.addText("Fleet Copier Management System", { x: 1, y: 2.8, w: "80%", h: 1, fontSize: 44, color: "FFFFFF", bold: true, align: "center" });
   slide1.addText(`Operational Analytics Report\nMonth: ${months[currentMonth-1]} ${currentYear}`, { x: 1, y: 4.0, w: "80%", h: 1, fontSize: 24, color: "FFFFFF", align: "center" });
 
@@ -184,7 +186,55 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   slide2.addText(`Est. Cost (${currentYear})`, { x: 7.0, y: 2.7, w: 2.5, h: 0.5, fontSize: 14, color: "b52025", align: "center" });
   slide2.addText(`Rp ${(totalEstimatedCost / 1000).toLocaleString()}k`, { x: 7.0, y: 3.2, w: 2.5, h: 0.6, fontSize: 28, bold: true, color: "991b1b", align: "center" });
 
-  // Slide 3: Monthly & Weekly Trends
+  // Slide 3: Summary Detail (Weekly, Monthly, Yearly)
+  const slideSummary = pptx.addSlide({ masterName: "MASTER_SLIDE" });
+  slideSummary.addText("Usage & Cost Summary", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 28, bold: true, color: "333333" });
+
+  const formatRp = (val: number) => `Rp ${(val).toLocaleString()}`;
+  const tableRows: any[][] = [
+    [
+      { text: "Period", options: { bold: true, fill: "f1f5f9" } }, 
+      { text: "Usage (Pages)", options: { bold: true, fill: "f1f5f9" } }, 
+      { text: "Estimated Cost", options: { bold: true, fill: "f1f5f9" } }
+    ]
+  ];
+
+  for(let w=1; w<=5; w++) {
+    const wUsage = weeklyMap[w].BW + weeklyMap[w].COLOR;
+    const wBwCost = monthlyMap[currentMonth].BW > 0 ? (weeklyMap[w].BW / monthlyMap[currentMonth].BW) * costBwArr[currentMonth-1] : 0;
+    const wColorCost = weeklyMap[w].COLOR * 2000;
+    const wCost = Math.round(wBwCost + wColorCost);
+    if (wUsage > 0 || w === 1) { // Show at least w1
+      tableRows.push([`Week ${w} (${months[currentMonth-1]})`, wUsage.toLocaleString(), formatRp(wCost)]);
+    }
+  }
+
+  const mUsage = monthlyMap[currentMonth].BW + monthlyMap[currentMonth].COLOR;
+  const mCost = costBwArr[currentMonth-1] + costColorArr[currentMonth-1];
+  tableRows.push([
+    { text: `Total Month (${months[currentMonth-1]})`, options: { bold: true, fill: "fffbeb" } },
+    { text: mUsage.toLocaleString(), options: { bold: true, fill: "fffbeb" } },
+    { text: formatRp(mCost), options: { bold: true, fill: "fffbeb" } }
+  ]);
+
+  let yUsage = 0;
+  Object.values(monthlyMap).forEach(d => yUsage += d.BW + d.COLOR);
+  tableRows.push([
+    { text: `Total Year (${currentYear})`, options: { bold: true, fill: "fef2f2" } },
+    { text: yUsage.toLocaleString(), options: { bold: true, fill: "fef2f2" } },
+    { text: formatRp(totalEstimatedCost), options: { bold: true, fill: "fef2f2" } }
+  ]);
+
+  slideSummary.addTable(tableRows, { 
+    x: 0.5, y: 1.8, w: 9, 
+    colW: [3, 3, 3],
+    border: { pt: 1, color: "e2e8f0" },
+    fontSize: 14,
+    align: "center",
+    valign: "middle"
+  });
+
+  // Slide 4: Monthly & Weekly Trends
   const slide3 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
   slide3.addText("Usage Trends: Monthly & Weekly", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 24, bold: true, color: "333333" });
   
