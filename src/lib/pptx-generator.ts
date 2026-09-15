@@ -177,12 +177,9 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   // Master Slide
   pptx.defineSlideMaster({
     title: "MASTER_SLIDE",
-    background: { color: "FFFFFF" },
+    background: { path: "public/bg-content.png" },
     objects: [
-      { rect: { x: 0, y: 0, w: "100%", h: 0.75, fill: { color: "b52025" } } }, // Dark Red Header
-      { image: { x: 0.2, y: 0.1, w: 0.67, h: 0.55, path: "public/logo-sm.png" } }, // Logo
-      { text: { text: "FCMM Operational Report", options: { x: 1.2, y: 0.15, w: 4, h: 0.5, color: "FFFFFF", fontSize: 16, bold: true } } },
-      { text: { text: `Generated: ${new Date().toLocaleDateString()}`, options: { x: "70%", y: 0.2, w: 2.5, h: 0.5, color: "FFFFFF", fontSize: 10, align: "right" } } },
+      { text: { text: `Generated: ${new Date().toLocaleDateString()}`, options: { x: "70%", y: 5.2, w: 2.5, h: 0.3, color: "888888", fontSize: 10, align: "right" } } },
       { text: { text: "Page", options: { x: 8.5, y: 5.2, w: 0.8, h: 0.3, color: "888888", fontSize: 12, align: "right" } } }
     ],
     slideNumber: { x: 9.4, y: 5.2, w: 0.5, h: 0.3, color: "888888", fontSize: 12, align: "left" }
@@ -190,14 +187,13 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 1: Title
   const slide1 = pptx.addSlide();
-  slide1.background = { color: "b52025" }; // Dark Red background
-  slide1.addImage({ path: "public/logo-sm.png", x: 3.5, y: 0.2, w: 3, h: 2.47 }); // Fixed aspect ratio
-  slide1.addText("Fleet Copier Management System", { x: 1, y: 2.8, w: "80%", h: 1, fontSize: 44, color: "FFFFFF", bold: true, align: "center" });
-  slide1.addText(`Operational Analytics Report\nMonth: ${months[currentMonth-1]} ${currentYear}`, { x: 1, y: 4.0, w: "80%", h: 1, fontSize: 24, color: "FFFFFF", align: "center" });
+  slide1.background = { path: "public/bg-title.png" };
+  slide1.addText("Weekly Photocopier Usage Report", { x: 0.5, y: 4.1, w: "80%", h: 0.6, fontSize: 36, color: "b52025", bold: true, align: "left" });
+  slide1.addText(`${months[currentMonth-1]} ${currentYear}`, { x: 0.5, y: 4.7, w: "80%", h: 0.5, fontSize: 28, color: "b52025", italic: true, align: "left" });
 
   // Slide 2: Executive Summary
   const slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide2.addText("Executive Summary", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 28, bold: true, color: "333333" });
+  slide2.addText("Executive Summary", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
   
   slide2.addShape(pptx.ShapeType.rect, { x: 0.5, y: 2.5, w: 2.5, h: 1.5, fill: { color: "f1f5f9" }, line: { color: "cbd5e1" } });
   slide2.addText("Total Users", { x: 0.5, y: 2.7, w: 2.5, h: 0.5, fontSize: 14, color: "64748b", align: "center" });
@@ -213,7 +209,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 3: Summary Detail (Weekly, Monthly, Yearly)
   const slideSummary = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slideSummary.addText("Usage & Cost Summary", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 28, bold: true, color: "333333" });
+  slideSummary.addText("Usage & Cost Summary", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
 
   const formatRp = (val: number) => `Rp ${(val).toLocaleString()}`;
   const tableRows: any[][] = [
@@ -285,7 +281,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 4: Monthly & Weekly Trends
   const slide3 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide3.addText("Usage Trends: Monthly & Weekly", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 24, bold: true, color: "333333" });
+  slide3.addText("Usage Trends: Monthly & Weekly", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
   
   slide3.addChart(pptx.ChartType.bar, monthlyChartData, {
     x: 0.5, y: 1.8, w: 4.25, h: 3.5,
@@ -305,7 +301,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 4: Cumulative YTD & MTD
   const slide4 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide4.addText("Cumulative Usage (YTD & MTD)", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 24, bold: true, color: "333333" });
+  slide4.addText("Cumulative Usage (YTD & MTD)", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
   
   slide4.addChart(pptx.ChartType.area, ytdChartData, {
     x: 0.5, y: 1.8, w: 4.25, h: 3.5,
@@ -325,7 +321,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 5: Distribution (Pie Charts)
   const slide5 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide5.addText("Historical Distribution Analysis", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 24, bold: true, color: "333333" });
+  slide5.addText("Historical Distribution Analysis", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
   
   const pieBWColor = [{ name: "Color vs BW", labels: ["BW", "COLOR"], values: [totalBW, totalColor] }];
   const piePrintCopy = [{ name: "Print vs Copy", labels: ["PRINT", "COPY"], values: [totalPrint, totalCopy] }];
@@ -348,7 +344,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 6: Top Users
   const slide6 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide6.addText("Top 5 Users & Departments", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 24, bold: true, color: "333333" });
+  slide6.addText("Top 5 Users & Departments", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
   
   slide6.addChart(pptx.ChartType.bar, topUsersChartData, {
     x: 0.5, y: 1.8, w: 9, h: 3.5,
@@ -361,7 +357,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 6.5: Top Users Detail Table
   const slide6Detail = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide6Detail.addText("Top 5 Departments Detail", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 28, bold: true, color: "333333" });
+  slide6Detail.addText("Top 5 Departments Detail", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
 
   const formatCell = (usage: number, bw: number, col: number) => 
     `${usage.toLocaleString()}\n(B:${bw.toLocaleString()} C:${col.toLocaleString()})`;
@@ -403,7 +399,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 7: Cost Analysis
   const slide7 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide7.addText("Estimated Monthly Cost Analysis", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 24, bold: true, color: "333333" });
+  slide7.addText("Estimated Monthly Cost Analysis", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
   
   slide7.addChart(pptx.ChartType.bar, costChartData, {
     x: 0.5, y: 1.8, w: 9, h: 3.5,
@@ -412,6 +408,10 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     chartColors: ["64748b", "ef4444"],
     legendPos: "b"
   });
+
+  // Slide 8: Closing Slide
+  const slide8 = pptx.addSlide();
+  slide8.background = { path: "public/bg-end.png" };
 
   // Generate buffer
   return await pptx.write({ outputType: "nodebuffer" }) as Buffer;
