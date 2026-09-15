@@ -714,10 +714,12 @@ export default function DataEntryPage() {
                   </button>
                 </div>
                 <div className="p-4 bg-gray-100 dark:bg-gray-900/50 flex justify-center items-center overflow-auto" style={{ maxHeight: '80vh' }}>
-                  {viewingFileUrl.toLowerCase().endsWith('.pdf') ? (
-                    <iframe src={viewingFileUrl.startsWith('/fcmm') ? viewingFileUrl : `/fcmm${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded" title="Reference PDF" />
-                  ) : (
-                    <img src={viewingFileUrl.startsWith('/fcmm') ? viewingFileUrl : `/fcmm${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded shadow-sm" />
+                  {viewingFileUrl && (
+                    viewingFileUrl.toLowerCase().endsWith('.pdf') ? (
+                      <iframe src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded" title="Reference PDF" />
+                    ) : (
+                      <img src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded shadow-sm" />
+                    )
                   )}
                 </div>
               </div>
