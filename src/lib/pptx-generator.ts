@@ -212,16 +212,16 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     x: 0.5, y: 1.8, w: 4.25, h: 3.5,
     title: `YTD Cumulative (${currentYear})`, showTitle: true,
     chartColors: ["ef4444"],
-    fillOpacity: 0.5,
-    legendPos: "none"
+
+    showLegend: false
   });
 
   slide4.addChart(pptx.ChartType.area, mtdChartData, {
     x: 5.25, y: 1.8, w: 4.25, h: 3.5,
     title: `MTD Cumulative (${months[currentMonth-1]})`, showTitle: true,
     chartColors: ["22c55e"],
-    fillOpacity: 0.5,
-    legendPos: "none"
+
+    showLegend: false
   });
 
   // Slide 5: Distribution (Pie Charts)
@@ -256,7 +256,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     title: `Highest Usage (${currentYear})`, showTitle: true,
     barDir: "bar",
     chartColors: ["f97316"],
-    legendPos: "none",
+    showLegend: false,
     dataLabelPosition: "outEnd"
   });
 
@@ -273,5 +273,5 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   });
 
   // Generate buffer
-  return await pptx.write("nodebuffer") as Buffer;
+  return await pptx.write({ outputType: "nodebuffer" }) as Buffer;
 }

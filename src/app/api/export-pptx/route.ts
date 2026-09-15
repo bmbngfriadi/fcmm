@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const filename = `FCMM_Report_${currentYear}_${months[currentMonth-1]}.pptx`;
 
-    return new NextResponse(pptxBuffer, {
+    return new NextResponse(pptxBuffer as any, {
       status: 200,
       headers: {
         "Content-Type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",

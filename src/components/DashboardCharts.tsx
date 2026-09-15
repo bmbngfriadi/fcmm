@@ -39,7 +39,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
   const gridColor = theme === 'dark' ? '#27272a' : '#e4e4e7';
   const tooltipBg = theme === 'dark' ? '#09090b' : '#ffffff';
 
-  const formatIDR = (value: number) => {
+  const formatIDR = (value: any) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
   };
 
@@ -59,7 +59,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
                   itemStyle={{ color: textColor }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Legend iconType="circle" />
                 <Bar dataKey="BW" name="Black & White" stackId="a" fill={PIE_COLORS.BW} radius={[0, 0, 4, 4]} animationDuration={1500} />
@@ -80,7 +80,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <YAxis stroke={textColor} fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => value.toLocaleString()} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Legend iconType="circle" />
                 <Bar dataKey="PRINT" name="Print" fill={PIE_COLORS.PRINT} radius={[4, 4, 0, 0]} animationDuration={1500} />
@@ -111,7 +111,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
                   itemStyle={{ color: textColor }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Area type="monotone" dataKey="cumulative" name="YTD Usage" stroke={COLORS[0]} fillOpacity={1} fill="url(#colorYtd)" animationDuration={1500} />
               </AreaChart>
@@ -137,7 +137,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
                   itemStyle={{ color: textColor }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Area type="monotone" dataKey="cumulative" name="MTD Usage" stroke={COLORS[3]} fillOpacity={1} fill="url(#colorMtd)" animationDuration={1500} />
               </AreaChart>
@@ -170,7 +170,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 </Pie>
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Legend iconType="circle" verticalAlign="bottom" height={36}/>
               </PieChart>
@@ -200,7 +200,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 </Pie>
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Legend iconType="circle" verticalAlign="bottom" height={36}/>
               </PieChart>
@@ -222,7 +222,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <YAxis dataKey="name" type="category" stroke={textColor} fontSize={11} tickLine={false} axisLine={false} width={80} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Bar dataKey="usage" name="Total Usage" radius={[0, 4, 4, 0]} animationDuration={1500}>
                   {data.topUsers.map((entry, index) => (
@@ -245,7 +245,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <YAxis dataKey="name" type="category" stroke={textColor} fontSize={11} tickLine={false} axisLine={false} width={80} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
-                  formatter={(value: number) => value.toLocaleString()}
+                  formatter={(value: any) => value.toLocaleString()}
                 />
                 <Bar dataKey="average" name="Daily Avg" radius={[0, 4, 4, 0]} animationDuration={1500}>
                   {data.dailyAverages.map((entry, index) => (
@@ -272,7 +272,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
               <Tooltip 
                 contentStyle={{ backgroundColor: tooltipBg, borderColor: gridColor, borderRadius: '2px', borderWidth: '2px' }}
                 itemStyle={{ color: textColor }}
-                formatter={(value: number) => formatIDR(value)}
+                formatter={(value: any) => formatIDR(value)}
               />
               <Legend iconType="circle" />
               <Bar dataKey="CostBW" name="Cost BW" stackId="a" fill={PIE_COLORS.BW} radius={[0, 0, 4, 4]} animationDuration={1500} />
