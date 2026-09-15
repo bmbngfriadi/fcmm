@@ -49,7 +49,12 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   let totalBW = 0, totalColor = 0, totalPrint = 0, totalCopy = 0;
   let totalUsageCurrentMonth = 0;
   
-  const userUsageMap: Record<string, { name: string, yearlyUsage: number, monthlyUsage: number, weeklyUsage: number[] }> = {};
+  const userUsageMap: Record<string, { 
+      name: string, 
+      yearlyUsage: number, yearlyBw: number, yearlyColor: number,
+      monthlyUsage: number, monthlyBw: number, monthlyColor: number,
+      weeklyUsage: number[], weeklyBw: number[], weeklyColor: number[]
+  }> = {};
 
   records.forEach(r => {
     const usage = calculateUsage(r);
@@ -81,15 +86,27 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     // Top Users
     if (r.year === currentYear && r.user) {
         if (!userUsageMap[r.userId]) {
-            userUsageMap[r.userId] = { name: r.user.name || "Unknown", yearlyUsage: 0, monthlyUsage: 0, weeklyUsage: [0, 0, 0, 0, 0] };
+            userUsageMap[r.userId] = { 
+                name: r.user.name || "Unknown", 
+                yearlyUsage: 0, yearlyBw: 0, yearlyColor: 0, 
+                monthlyUsage: 0, monthlyBw: 0, monthlyColor: 0, 
+                weeklyUsage: [0, 0, 0, 0, 0], weeklyBw: [0, 0, 0, 0, 0], weeklyColor: [0, 0, 0, 0, 0]
+            };
         }
         userUsageMap[r.userId].yearlyUsage += usage;
+        if (r.colorMode === "BW") userUsageMap[r.userId].yearlyBw += usage;
+        if (r.colorMode === "COLOR") userUsageMap[r.userId].yearlyColor += usage;
         
         if (r.month === currentMonth) {
             userUsageMap[r.userId].monthlyUsage += usage;
+            if (r.colorMode === "BW") userUsageMap[r.userId].monthlyBw += usage;
+            if (r.colorMode === "COLOR") userUsageMap[r.userId].monthlyColor += usage;
+            
             for (let w = 1; w <= 5; w++) {
                 const wUsage = calculateWeekUsage(r, w);
                 userUsageMap[r.userId].weeklyUsage[w - 1] += wUsage;
+                if (r.colorMode === "BW") userUsageMap[r.userId].weeklyBw[w - 1] += wUsage;
+                if (r.colorMode === "COLOR") userUsageMap[r.userId].weeklyColor[w - 1] += wUsage;
             }
         }
     }
@@ -202,42 +219,66 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   const tableRows: any[][] = [
     [
       { text: "Period", options: { bold: true, fill: "f1f5f9" } }, 
-      { text: "Usage (Pages)", options: { bold: true, fill: "f1f5f9" } }, 
+      { text: "Total Pages", options: { bold: true, fill: "f1f5f9" } }, 
+      { text: "Detail (BW / Color)", options: { bold: true, fill: "f1f5f9" } },
+      { text: "Cost Calculation", options: { bold: true, fill: "f1f5f9" } },
       { text: "Estimated Cost", options: { bold: true, fill: "f1f5f9" } }
     ]
   ];
 
   for(let w=1; w<=5; w++) {
-    const wUsage = weeklyMap[w].BW + weeklyMap[w].COLOR;
-    const wBwCost = monthlyMap[currentMonth].BW > 0 ? (weeklyMap[w].BW / monthlyMap[currentMonth].BW) * costBwArr[currentMonth-1] : 0;
-    const wColorCost = weeklyMap[w].COLOR * 2000;
+    const wBw = weeklyMap[w].BW;
+    const wCol = weeklyMap[w].COLOR;
+    const wUsage = wBw + wCol;
+    const mBwTotal = monthlyMap[currentMonth].BW;
+    
+    const pctBw = mBwTotal > 0 ? ((wBw / mBwTotal) * 100).toFixed(1) : "0";
+    const wBwCost = mBwTotal > 0 ? (wBw / mBwTotal) * costBwArr[currentMonth-1] : 0;
+    const wColorCost = wCol * 2000;
     const wCost = Math.round(wBwCost + wColorCost);
+    
     if (wUsage > 0 || w === 1) { // Show at least w1
-      tableRows.push([`Week ${w} (${months[currentMonth-1]})`, wUsage.toLocaleString(), formatRp(wCost)]);
+      tableRows.push([
+        `Week ${w} (${months[currentMonth-1]})`, 
+        wUsage.toLocaleString(), 
+        `BW: ${wBw.toLocaleString()}\nColor: ${wCol.toLocaleString()}`,
+        `BW: ${pctBw}% dr tagihan bulan\nColor: ${wCol.toLocaleString()} x Rp 2.000`,
+        formatRp(wCost)
+      ]);
     }
   }
 
-  const mUsage = monthlyMap[currentMonth].BW + monthlyMap[currentMonth].COLOR;
+  const mBw = monthlyMap[currentMonth].BW;
+  const mCol = monthlyMap[currentMonth].COLOR;
+  const mUsage = mBw + mCol;
   const mCost = costBwArr[currentMonth-1] + costColorArr[currentMonth-1];
+  const mBwBillable = mBw > 2000 ? mBw - 2000 : 0;
+
   tableRows.push([
     { text: `Total Month (${months[currentMonth-1]})`, options: { bold: true, fill: "fffbeb" } },
     { text: mUsage.toLocaleString(), options: { bold: true, fill: "fffbeb" } },
+    { text: `BW: ${mBw.toLocaleString()}\nColor: ${mCol.toLocaleString()}`, options: { bold: true, fill: "fffbeb" } },
+    { text: `BW: ${mBwBillable.toLocaleString()} x Rp 100\nColor: ${mCol.toLocaleString()} x Rp 2.000`, options: { bold: true, fill: "fffbeb" } },
     { text: formatRp(mCost), options: { bold: true, fill: "fffbeb" } }
   ]);
 
-  let yUsage = 0;
-  Object.values(monthlyMap).forEach(d => yUsage += d.BW + d.COLOR);
+  let yBw = 0, yCol = 0;
+  Object.values(monthlyMap).forEach(d => { yBw += d.BW; yCol += d.COLOR; });
+  let yUsage = yBw + yCol;
+
   tableRows.push([
     { text: `Total Year (${currentYear})`, options: { bold: true, fill: "fef2f2" } },
     { text: yUsage.toLocaleString(), options: { bold: true, fill: "fef2f2" } },
+    { text: `BW: ${yBw.toLocaleString()}\nColor: ${yCol.toLocaleString()}`, options: { bold: true, fill: "fef2f2" } },
+    { text: `(Total akumulasi tagihan bulanan)`, options: { bold: true, fill: "fef2f2" } },
     { text: formatRp(totalEstimatedCost), options: { bold: true, fill: "fef2f2" } }
   ]);
 
   slideSummary.addTable(tableRows, { 
-    x: 0.5, y: 1.8, w: 9, 
-    colW: [3, 3, 3],
+    x: 0.2, y: 1.8, w: 9.6, 
+    colW: [2.1, 1.2, 1.7, 3, 1.6],
     border: { pt: 1, color: "e2e8f0" },
-    fontSize: 14,
+    fontSize: 13,
     align: "center",
     valign: "middle"
   });
@@ -322,6 +363,9 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   const slide6Detail = pptx.addSlide({ masterName: "MASTER_SLIDE" });
   slide6Detail.addText("Top 5 Departments Detail", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 28, bold: true, color: "333333" });
 
+  const formatCell = (usage: number, bw: number, col: number) => 
+    `${usage.toLocaleString()}\n(B:${bw.toLocaleString()} C:${col.toLocaleString()})`;
+
   const topUsersTableRows: any[][] = [
     [
       { text: "Department", options: { bold: true, fill: "f1f5f9" } },
@@ -330,29 +374,29 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
       { text: "W3", options: { bold: true, fill: "f1f5f9" } },
       { text: "W4", options: { bold: true, fill: "f1f5f9" } },
       { text: "W5", options: { bold: true, fill: "f1f5f9" } },
-      { text: `Total Month (${months[currentMonth-1]})`, options: { bold: true, fill: "fffbeb" } },
-      { text: `Total Year (${currentYear})`, options: { bold: true, fill: "fef2f2" } }
+      { text: `Total Month`, options: { bold: true, fill: "fffbeb" } },
+      { text: `Total Year`, options: { bold: true, fill: "fef2f2" } }
     ]
   ];
 
   topUsersData.forEach(u => {
     topUsersTableRows.push([
       { text: u.name, options: { bold: true } },
-      u.weeklyUsage[0].toLocaleString(),
-      u.weeklyUsage[1].toLocaleString(),
-      u.weeklyUsage[2].toLocaleString(),
-      u.weeklyUsage[3].toLocaleString(),
-      u.weeklyUsage[4].toLocaleString(),
-      { text: u.monthlyUsage.toLocaleString(), options: { fill: "fffbeb" } },
-      { text: u.yearlyUsage.toLocaleString(), options: { fill: "fef2f2" } }
+      formatCell(u.weeklyUsage[0], u.weeklyBw[0], u.weeklyColor[0]),
+      formatCell(u.weeklyUsage[1], u.weeklyBw[1], u.weeklyColor[1]),
+      formatCell(u.weeklyUsage[2], u.weeklyBw[2], u.weeklyColor[2]),
+      formatCell(u.weeklyUsage[3], u.weeklyBw[3], u.weeklyColor[3]),
+      formatCell(u.weeklyUsage[4], u.weeklyBw[4], u.weeklyColor[4]),
+      { text: formatCell(u.monthlyUsage, u.monthlyBw, u.monthlyColor), options: { fill: "fffbeb" } },
+      { text: formatCell(u.yearlyUsage, u.yearlyBw, u.yearlyColor), options: { fill: "fef2f2" } }
     ]);
   });
 
   slide6Detail.addTable(topUsersTableRows, { 
-    x: 0.5, y: 1.8, w: 9, 
-    colW: [2.5, 0.8, 0.8, 0.8, 0.8, 0.8, 1.25, 1.25],
+    x: 0.1, y: 1.8, w: 9.8, 
+    colW: [2.2, 0.95, 0.95, 0.95, 0.95, 0.95, 1.4, 1.45],
     border: { pt: 1, color: "e2e8f0" },
-    fontSize: 12,
+    fontSize: 10,
     align: "center",
     valign: "middle"
   });
