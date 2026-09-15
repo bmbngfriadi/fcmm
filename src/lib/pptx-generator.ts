@@ -177,7 +177,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   // Master Slide
   pptx.defineSlideMaster({
     title: "MASTER_SLIDE",
-    background: { path: "public/bg-content.png" },
+    background: { path: "public/bg-content.jpg" },
     objects: [
       { text: { text: `Generated: ${new Date().toLocaleDateString()}`, options: { x: 0.5, y: 5.2, w: 3.0, h: 0.3, color: "888888", fontSize: 10, align: "left" } } },
       { text: { text: "Page", options: { x: 8.5, y: 5.2, w: 0.8, h: 0.3, color: "888888", fontSize: 12, align: "right" } } }
@@ -187,7 +187,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 1: Title
   const slide1 = pptx.addSlide();
-  slide1.background = { path: "public/bg-title.png" };
+  slide1.background = { path: "public/bg-title.jpg" };
   slide1.addText("Weekly Photocopier Usage Report", { x: 0.5, y: 4.1, w: 5.5, h: 0.6, fontSize: 32, color: "b52025", bold: true, align: "left", valign: "middle" });
   slide1.addText(`${months[currentMonth-1]} ${currentYear}`, { x: 0.5, y: 4.7, w: 5.5, h: 0.5, fontSize: 24, color: "b52025", italic: true, align: "left", valign: "middle" });
 
@@ -417,8 +417,8 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 8: Closing Slide
   const slide8 = pptx.addSlide();
-  slide8.background = { path: "public/bg-end.png" };
+  slide8.background = { path: "public/bg-end.jpg" };
 
   // Generate buffer
-  return await pptx.write({ outputType: "nodebuffer" }) as Buffer;
+  return await pptx.write({ outputType: "nodebuffer", compression: true }) as Buffer;
 }
