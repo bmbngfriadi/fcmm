@@ -179,7 +179,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     title: "MASTER_SLIDE",
     background: { path: "public/bg-content.png" },
     objects: [
-      { text: { text: `Generated: ${new Date().toLocaleDateString()}`, options: { x: "70%", y: 5.2, w: 2.5, h: 0.3, color: "888888", fontSize: 10, align: "right" } } },
+      { text: { text: `Generated: ${new Date().toLocaleDateString()}`, options: { x: 0.5, y: 5.2, w: 3.0, h: 0.3, color: "888888", fontSize: 10, align: "left" } } },
       { text: { text: "Page", options: { x: 8.5, y: 5.2, w: 0.8, h: 0.3, color: "888888", fontSize: 12, align: "right" } } }
     ],
     slideNumber: { x: 9.4, y: 5.2, w: 0.5, h: 0.3, color: "888888", fontSize: 12, align: "left" }
@@ -188,12 +188,12 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   // Slide 1: Title
   const slide1 = pptx.addSlide();
   slide1.background = { path: "public/bg-title.png" };
-  slide1.addText("Weekly Photocopier Usage Report", { x: 0.5, y: 4.1, w: "80%", h: 0.6, fontSize: 36, color: "b52025", bold: true, align: "left" });
-  slide1.addText(`${months[currentMonth-1]} ${currentYear}`, { x: 0.5, y: 4.7, w: "80%", h: 0.5, fontSize: 28, color: "b52025", italic: true, align: "left" });
+  slide1.addText("Weekly Photocopier Usage Report", { x: 0.5, y: 4.1, w: 5.5, h: 0.6, fontSize: 32, color: "b52025", bold: true, align: "left", valign: "middle" });
+  slide1.addText(`${months[currentMonth-1]} ${currentYear}`, { x: 0.5, y: 4.7, w: 5.5, h: 0.5, fontSize: 24, color: "b52025", italic: true, align: "left", valign: "middle" });
 
   // Slide 2: Executive Summary
   const slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide2.addText("Executive Summary", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide2.addText("Executive Summary", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
   
   slide2.addShape(pptx.ShapeType.rect, { x: 0.5, y: 2.5, w: 2.5, h: 1.5, fill: { color: "f1f5f9" }, line: { color: "cbd5e1" } });
   slide2.addText("Total Users", { x: 0.5, y: 2.7, w: 2.5, h: 0.5, fontSize: 14, color: "64748b", align: "center" });
@@ -209,7 +209,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 3: Summary Detail (Weekly, Monthly, Yearly)
   const slideSummary = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slideSummary.addText("Usage & Cost Summary", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slideSummary.addText("Usage & Cost Summary", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
 
   const formatRp = (val: number) => `Rp ${(val).toLocaleString()}`;
   const tableRows: any[][] = [
@@ -281,14 +281,15 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 4: Monthly & Weekly Trends
   const slide3 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide3.addText("Usage Trends: Monthly & Weekly", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide3.addText("Usage Trends: Monthly & Weekly", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
   
   slide3.addChart(pptx.ChartType.bar, monthlyChartData, {
     x: 0.5, y: 1.8, w: 4.25, h: 3.5,
     title: `Total Usage Per Month (${currentYear})`, showTitle: true,
     barDir: "col", barGrouping: "stacked",
     chartColors: ["64748b", "ef4444"],
-    legendPos: "b"
+    legendPos: "b",
+    fill: "FFFFFF"
   });
 
   slide3.addChart(pptx.ChartType.bar, weeklyChartData, {
@@ -296,18 +297,19 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     title: `Usage Per Week (${months[currentMonth-1]})`, showTitle: true,
     barDir: "col",
     chartColors: ["0284c7", "f59e0b"],
-    legendPos: "b"
+    legendPos: "b",
+    fill: "FFFFFF"
   });
 
   // Slide 4: Cumulative YTD & MTD
   const slide4 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide4.addText("Cumulative Usage (YTD & MTD)", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide4.addText("Cumulative Usage (YTD & MTD)", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
   
   slide4.addChart(pptx.ChartType.area, ytdChartData, {
     x: 0.5, y: 1.8, w: 4.25, h: 3.5,
     title: `YTD Cumulative (${currentYear})`, showTitle: true,
     chartColors: ["ef4444"],
-
+    fill: "FFFFFF",
     showLegend: false
   });
 
@@ -315,13 +317,13 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     x: 5.25, y: 1.8, w: 4.25, h: 3.5,
     title: `MTD Cumulative (${months[currentMonth-1]})`, showTitle: true,
     chartColors: ["22c55e"],
-
+    fill: "FFFFFF",
     showLegend: false
   });
 
   // Slide 5: Distribution (Pie Charts)
   const slide5 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide5.addText("Historical Distribution Analysis", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide5.addText("Historical Distribution Analysis", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
   
   const pieBWColor = [{ name: "Color vs BW", labels: ["BW", "COLOR"], values: [totalBW, totalColor] }];
   const piePrintCopy = [{ name: "Print vs Copy", labels: ["PRINT", "COPY"], values: [totalPrint, totalCopy] }];
@@ -331,7 +333,8 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     title: "BW vs Color (All Time)", showTitle: true,
     chartColors: ["64748b", "ef4444"],
     showLegend: true, legendPos: "b",
-    dataLabelFormatCode: "0%"
+    dataLabelFormatCode: "0%",
+    fill: "FFFFFF"
   });
 
   slide5.addChart(pptx.ChartType.pie, piePrintCopy, {
@@ -339,12 +342,13 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     title: "Print vs Copy (All Time)", showTitle: true,
     chartColors: ["0284c7", "f59e0b"],
     showLegend: true, legendPos: "b",
-    dataLabelFormatCode: "0%"
+    dataLabelFormatCode: "0%",
+    fill: "FFFFFF"
   });
 
   // Slide 6: Top Users
   const slide6 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide6.addText("Top 5 Users & Departments", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide6.addText("Top 5 Users & Departments", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
   
   slide6.addChart(pptx.ChartType.bar, topUsersChartData, {
     x: 0.5, y: 1.8, w: 9, h: 3.5,
@@ -352,12 +356,13 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     barDir: "bar",
     chartColors: ["f97316"],
     showLegend: false,
-    dataLabelPosition: "outEnd"
+    dataLabelPosition: "outEnd",
+    fill: "FFFFFF"
   });
 
   // Slide 6.5: Top Users Detail Table
   const slide6Detail = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide6Detail.addText("Top 5 Departments Detail", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide6Detail.addText("Top 5 Departments Detail", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
 
   const formatCell = (usage: number, bw: number, col: number) => 
     `${usage.toLocaleString()}\n(B:${bw.toLocaleString()} C:${col.toLocaleString()})`;
@@ -399,14 +404,15 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
 
   // Slide 7: Cost Analysis
   const slide7 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-  slide7.addText("Estimated Monthly Cost Analysis", { x: 0.3, y: 0.8, w: "90%", h: 0.6, fontSize: 26, bold: true, color: "FFFFFF" });
+  slide7.addText("Estimated Monthly Cost Analysis", { x: 0.4, y: 0.72, w: "90%", h: 0.7, fontSize: 24, bold: true, color: "FFFFFF", valign: "middle" });
   
   slide7.addChart(pptx.ChartType.bar, costChartData, {
     x: 0.5, y: 1.8, w: 9, h: 3.5,
     title: `Monthly Estimated Cost (IDR)`, showTitle: true,
     barDir: "col", barGrouping: "stacked",
     chartColors: ["64748b", "ef4444"],
-    legendPos: "b"
+    legendPos: "b",
+    fill: "FFFFFF"
   });
 
   // Slide 8: Closing Slide
