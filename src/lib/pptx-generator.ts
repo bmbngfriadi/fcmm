@@ -49,7 +49,7 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   let totalBW = 0, totalColor = 0, totalPrint = 0, totalCopy = 0;
   let totalUsageCurrentMonth = 0;
   
-  const userUsageMap: Record<string, { name: string, usage: number }> = {};
+  const userUsageMap: Record<string, { name: string, yearlyUsage: number, monthlyUsage: number, weeklyUsage: number[] }> = {};
 
   records.forEach(r => {
     const usage = calculateUsage(r);
@@ -78,12 +78,20 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     if (r.category === "PRINT") totalPrint += usage;
     if (r.category === "COPY") totalCopy += usage;
 
-    // Top Users (Selected year)
+    // Top Users
     if (r.year === currentYear && r.user) {
         if (!userUsageMap[r.userId]) {
-            userUsageMap[r.userId] = { name: r.user.name || "Unknown", usage: 0 };
+            userUsageMap[r.userId] = { name: r.user.name || "Unknown", yearlyUsage: 0, monthlyUsage: 0, weeklyUsage: [0, 0, 0, 0, 0] };
         }
-        userUsageMap[r.userId].usage += usage;
+        userUsageMap[r.userId].yearlyUsage += usage;
+        
+        if (r.month === currentMonth) {
+            userUsageMap[r.userId].monthlyUsage += usage;
+            for (let w = 1; w <= 5; w++) {
+                const wUsage = calculateWeekUsage(r, w);
+                userUsageMap[r.userId].weeklyUsage[w - 1] += wUsage;
+            }
+        }
     }
   });
 
@@ -115,13 +123,13 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   const mtdChartData = [{ name: "MTD Cumulative", labels: ["W1", "W2", "W3", "W4", "W5"], values: mtdValues }];
 
   const topUsersData = Object.values(userUsageMap)
-    .sort((a, b) => b.usage - a.usage)
+    .sort((a, b) => b.yearlyUsage - a.yearlyUsage)
     .slice(0, 5);
 
   const topUsersChartData = [{
     name: "Usage",
     labels: topUsersData.map(u => u.name),
-    values: topUsersData.map(u => u.usage)
+    values: topUsersData.map(u => u.yearlyUsage)
   }];
 
   const costBwArr: number[] = [];
@@ -308,6 +316,45 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
     chartColors: ["f97316"],
     showLegend: false,
     dataLabelPosition: "outEnd"
+  });
+
+  // Slide 6.5: Top Users Detail Table
+  const slide6Detail = pptx.addSlide({ masterName: "MASTER_SLIDE" });
+  slide6Detail.addText("Top 5 Departments Detail", { x: 0.5, y: 1, w: "90%", h: 0.5, fontSize: 28, bold: true, color: "333333" });
+
+  const topUsersTableRows: any[][] = [
+    [
+      { text: "Department", options: { bold: true, fill: "f1f5f9" } },
+      { text: "W1", options: { bold: true, fill: "f1f5f9" } },
+      { text: "W2", options: { bold: true, fill: "f1f5f9" } },
+      { text: "W3", options: { bold: true, fill: "f1f5f9" } },
+      { text: "W4", options: { bold: true, fill: "f1f5f9" } },
+      { text: "W5", options: { bold: true, fill: "f1f5f9" } },
+      { text: `Total Month (${months[currentMonth-1]})`, options: { bold: true, fill: "fffbeb" } },
+      { text: `Total Year (${currentYear})`, options: { bold: true, fill: "fef2f2" } }
+    ]
+  ];
+
+  topUsersData.forEach(u => {
+    topUsersTableRows.push([
+      { text: u.name, options: { bold: true } },
+      u.weeklyUsage[0].toLocaleString(),
+      u.weeklyUsage[1].toLocaleString(),
+      u.weeklyUsage[2].toLocaleString(),
+      u.weeklyUsage[3].toLocaleString(),
+      u.weeklyUsage[4].toLocaleString(),
+      { text: u.monthlyUsage.toLocaleString(), options: { fill: "fffbeb" } },
+      { text: u.yearlyUsage.toLocaleString(), options: { fill: "fef2f2" } }
+    ]);
+  });
+
+  slide6Detail.addTable(topUsersTableRows, { 
+    x: 0.5, y: 1.8, w: 9, 
+    colW: [2.5, 0.8, 0.8, 0.8, 0.8, 0.8, 1.25, 1.25],
+    border: { pt: 1, color: "e2e8f0" },
+    fontSize: 12,
+    align: "center",
+    valign: "middle"
   });
 
   // Slide 7: Cost Analysis
