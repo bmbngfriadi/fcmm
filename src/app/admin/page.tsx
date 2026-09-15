@@ -219,7 +219,7 @@ export default async function AdminDashboard() {
           <div className="h-1 w-12 bg-primary-600 mt-2"></div>
         </div>
         
-        <form action="/fcmm-system/api/export" method="GET" className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-4">
+        <form action="/fcmm/api/export" method="GET" className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-4">
           <div className="flex gap-4">
             <select name="month" className="flex-1 px-4 py-3 border-2 rounded-sm bg-zinc-50 text-zinc-900 border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-primary-500 transition-colors font-mono text-sm" defaultValue={currentMonth}>
               {Array.from({length: 12}, (_, i) => i + 1).map(m => (
@@ -236,7 +236,7 @@ export default async function AdminDashboard() {
             <button type="submit" className="w-full md:w-auto px-6 py-3 border-2 border-green-600 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-sm transition-colors uppercase tracking-widest text-center">
               GENERATE EXCEL
             </button>
-            <button type="submit" formAction="/fcmm-system/api/export-pptx" className="w-full md:w-auto px-6 py-3 border-2 border-orange-600 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-sm transition-colors uppercase tracking-widest text-center">
+            <button type="submit" formAction="/fcmm/api/export-pptx" className="w-full md:w-auto px-6 py-3 border-2 border-orange-600 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-sm transition-colors uppercase tracking-widest text-center">
               GENERATE PPTX
             </button>
           </div>

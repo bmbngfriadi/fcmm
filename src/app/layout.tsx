@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "FCMM System",
   description: "FCMM System Dashboard",
   icons: {
-    icon: '/fcmm-system/logo.png',
+    icon: '/fcmm/logo.png',
   },
 };
 

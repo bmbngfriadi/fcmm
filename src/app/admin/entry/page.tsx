@@ -56,7 +56,7 @@ export default function DataEntryPage() {
 
   useEffect(() => {
     if (canSeeAllUsers) {
-      fetch("/fcmm-system/api/users").then(res => res.json()).then(data => {
+      fetch("/fcmm/api/users").then(res => res.json()).then(data => {
         setUsersList(data);
       });
     }
@@ -83,7 +83,7 @@ export default function DataEntryPage() {
 
   const fetchReferenceFile = async () => {
     try {
-      const res = await fetch(`/fcmm-system/api/upload?month=${month}&year=${year}&category=${activeCategory}`);
+      const res = await fetch(`/fcmm/api/upload?month=${month}&year=${year}&category=${activeCategory}`);
       if (res.ok) {
         const data = await res.json();
         setReferenceFiles(data.files || {});
@@ -106,7 +106,7 @@ export default function DataEntryPage() {
     formData.append("week", selectedWeek);
 
     try {
-      const res = await fetch("/fcmm-system/api/upload", {
+      const res = await fetch("/fcmm/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -129,7 +129,7 @@ export default function DataEntryPage() {
 
   const fetchRecords = async () => {
     setLoading(true);
-    const res = await fetch(`/fcmm-system/api/records?month=${month}&year=${year}`);
+    const res = await fetch(`/fcmm/api/records?month=${month}&year=${year}`);
     if (res.ok) {
       const dbRecords = await res.json();
       
@@ -211,7 +211,7 @@ export default function DataEntryPage() {
         });
       });
 
-      const res = await fetch("/fcmm-system/api/records/bulk", {
+      const res = await fetch("/fcmm/api/records/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -241,7 +241,7 @@ export default function DataEntryPage() {
     
     setSendingEmail(true);
     try {
-      const res = await fetch("/fcmm-system/api/notify", {
+      const res = await fetch("/fcmm/api/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userIds: selectedUsers, month, year })
@@ -263,7 +263,7 @@ export default function DataEntryPage() {
   const handleToggleHide = async (userId: string, currentStatus: boolean) => {
     setTogglingHide(userId);
     try {
-      const res = await fetch(`/fcmm-system/api/users/${userId}/hide`, {
+      const res = await fetch(`/fcmm/api/users/${userId}/hide`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isHidden: !currentStatus })
@@ -715,9 +715,9 @@ export default function DataEntryPage() {
                 </div>
                 <div className="p-4 bg-gray-100 dark:bg-gray-900/50 flex justify-center items-center overflow-auto" style={{ maxHeight: '80vh' }}>
                   {viewingFileUrl.toLowerCase().endsWith('.pdf') ? (
-                    <iframe src={viewingFileUrl.startsWith('/fcmm-system') ? viewingFileUrl : `/fcmm-system${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded" title="Reference PDF" />
+                    <iframe src={viewingFileUrl.startsWith('/fcmm') ? viewingFileUrl : `/fcmm${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded" title="Reference PDF" />
                   ) : (
-                    <img src={viewingFileUrl.startsWith('/fcmm-system') ? viewingFileUrl : `/fcmm-system${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded shadow-sm" />
+                    <img src={viewingFileUrl.startsWith('/fcmm') ? viewingFileUrl : `/fcmm${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded shadow-sm" />
                   )}
                 </div>
               </div>

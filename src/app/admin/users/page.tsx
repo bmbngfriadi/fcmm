@@ -27,7 +27,7 @@ export default function UsersPage() {
   }, [showModal]);
 
   const fetchUsers = async () => {
-    const res = await fetch("/fcmm-system/api/users");
+    const res = await fetch("/fcmm/api/users");
     if (res.ok) {
       setUsers(await res.json());
     }
@@ -46,7 +46,7 @@ export default function UsersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = isEditing ? `/fcmm-system/api/users/${formData.id}` : "/fcmm-system/api/users";
+    const url = isEditing ? `/fcmm/api/users/${formData.id}` : "/fcmm/api/users";
     const method = isEditing ? "PUT" : "POST";
     
     const res = await fetch(url, {
@@ -71,7 +71,7 @@ export default function UsersPage() {
       type: "error",
       confirmText: "Delete",
       onConfirm: async () => {
-        const res = await fetch(`/fcmm-system/api/users/${id}`, { method: "DELETE" });
+        const res = await fetch(`/fcmm/api/users/${id}`, { method: "DELETE" });
         if (res.ok) {
           fetchUsers();
           showAlert({ title: "Deleted", message: "User has been deleted.", type: "success" });

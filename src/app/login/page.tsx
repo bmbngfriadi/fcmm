@@ -36,7 +36,7 @@ export default function LoginPage() {
       <div className="hidden md:flex md:w-1/2 lg:w-3/5 bg-zinc-900 text-white flex-col justify-between p-12 border-r border-zinc-800">
         <div>
           <div className="w-24 h-24 bg-white rounded-sm p-2 flex items-center justify-center mb-8 border border-zinc-700 shadow-[4px_4px_0px_rgba(220,38,38,1)]">
-            <img src="/fcmm-system/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
+            <img src="/fcmm/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
           </div>
           <h1 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter leading-tight text-zinc-100">
             FCMM<br/>
@@ -59,7 +59,7 @@ export default function LoginPage() {
           {/* Mobile Logo */}
           <div className="md:hidden flex flex-col items-center mb-10">
              <div className="w-20 h-20 bg-white rounded-sm p-2 flex items-center justify-center mb-4 border-2 border-zinc-900 dark:border-zinc-700 shadow-[4px_4px_0px_rgba(220,38,38,1)]">
-                <img src="/fcmm-system/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
+                <img src="/fcmm/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
              </div>
              <h2 className="text-3xl font-black uppercase tracking-tighter text-zinc-900 dark:text-zinc-100">
                 FCMM <span className="text-primary-600">SYSTEM</span>

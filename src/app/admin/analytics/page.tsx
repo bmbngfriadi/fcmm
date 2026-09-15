@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
 
   const fetchAnalytics = async () => {
     setLoading(true);
-    const res = await fetch(`/fcmm-system/api/analytics?filter=${filter}&month=${month}&year=${year}&week=${week}`);
+    const res = await fetch(`/fcmm/api/analytics?filter=${filter}&month=${month}&year=${year}&week=${week}`);
     if (res.ok) {
       setData(await res.json());
     }

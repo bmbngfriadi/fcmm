@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const filepath = path.join(uploadDir, filename);
 
     await writeFile(filepath, buffer);
-    const fileUrl = `/fcmm-system/uploads/${filename}`;
+    const fileUrl = `/fcmm/uploads/${filename}`;
 
     // Save to DB
     const reportFile = await prisma.reportFile.upsert({

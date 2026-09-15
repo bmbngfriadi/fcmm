@@ -20,7 +20,7 @@ export default function AdminLayout({
         <div className="md:hidden flex items-center justify-between p-4 bg-zinc-100 dark:bg-zinc-900 border-b-2 border-zinc-200 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 flex items-center justify-center bg-white rounded-sm p-1 border-2 border-zinc-800 shadow-[2px_2px_0px_rgba(220,38,38,1)]">
-              <img src="/fcmm-system/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
+              <img src="/fcmm/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
             </div>
             <span className="font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest text-lg">FCMM<span className="text-primary-600">SYS</span></span>
           </div>

@@ -37,7 +37,7 @@ export function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean, setIsOpen?: (
           </button>
         )}
         <div className="w-16 h-16 mb-4 flex items-center justify-center bg-white rounded-sm p-1.5 border border-zinc-700 shadow-[2px_2px_0px_rgba(220,38,38,1)]">
-          <img src="/fcmm-system/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
+          <img src="/fcmm/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
         </div>
         <span className="text-xl font-black uppercase tracking-widest text-white">FCMM<span className="text-primary-500">SYS</span></span>
       </div>
@@ -82,7 +82,7 @@ export function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean, setIsOpen?: (
           </div>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: '/fcmm-system/login' })}
+          onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
           className="flex items-center justify-center w-full px-2 py-3 text-xs font-bold text-red-500 border-2 border-zinc-800 hover:bg-red-950 hover:border-red-900 hover:text-red-400 rounded-sm transition-colors uppercase tracking-widest"
         >
           <LogOut className="mr-2 h-4 w-4" />
