@@ -75,11 +75,10 @@ export function AlertProvider({ children }: { children: ReactNode }) {
     closeAlert();
   };
 
-  // Close on ESC
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && alertState.isOpen) {
-        handleCancel(); // Escape means cancel/close
+        handleCancel();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -89,10 +88,10 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   const { options, isOpen } = alertState;
   
   const icons = {
-    info: <Info className="w-6 h-6 text-blue-500" />,
-    success: <CheckCircle className="w-6 h-6 text-green-500" />,
-    warning: <AlertTriangle className="w-6 h-6 text-yellow-500" />,
-    error: <AlertTriangle className="w-6 h-6 text-red-500" />,
+    info: <Info className="w-8 h-8" />,
+    success: <CheckCircle className="w-8 h-8" />,
+    warning: <AlertTriangle className="w-8 h-8" />,
+    error: <AlertTriangle className="w-8 h-8" />,
   };
 
   return (
@@ -101,50 +100,46 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={handleCancel}
           />
           <div
-            className="relative z-10 w-full max-w-sm bg-zinc-50 dark:bg-zinc-900 rounded-sm shadow-md overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 animate-in fade-in zoom-in-95 duration-200"
+            className="relative z-10 w-full max-w-md bg-[var(--bg-card)] rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-[var(--border-color)]"
           >
-            {/* Industrial corner accents */}
-            <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-            <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-primary-600"></div>
-            
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                  {icons[options.type || "info"]}
-                  <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wide">
-                    {options.title || (options.type ? options.type.charAt(0).toUpperCase() + options.type.slice(1) : "Notification")}
-                  </h3>
-                </div>
-                <button onClick={handleCancel} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
-                  <X className="w-5 h-5" />
-                </button>
+            <div className="p-8 text-center flex flex-col items-center">
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-5 ${
+                options.type === 'error' ? 'bg-red-500/15 text-red-500' :
+                options.type === 'warning' ? 'bg-yellow-500/15 text-yellow-500' :
+                options.type === 'success' ? 'bg-green-500/15 text-green-500' :
+                'bg-[var(--primary-500)]/15 text-[var(--primary-500)]'
+              }`}>
+                {icons[options.type || "info"]}
               </div>
-              <p className="text-zinc-600 dark:text-zinc-400 text-sm font-mono">{options.message}</p>
+              <h3 className="text-xl font-extrabold text-[var(--text-primary)] mb-2">
+                {options.title || (options.type ? options.type.charAt(0).toUpperCase() + options.type.slice(1) : "Notification")}
+              </h3>
+              <p className="text-[var(--text-secondary)] font-medium leading-relaxed">{options.message}</p>
             </div>
             
-            <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t-2 border-zinc-200 dark:border-zinc-800">
+            <div className="p-6 pt-0 flex gap-3">
+              {options.showCancel && (
+                <button
+                  onClick={handleCancel}
+                  className="flex-1 px-6 py-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold rounded-full min-h-[48px] hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                >
+                  {options.cancelText || "Batal"}
+                </button>
+              )}
               <button
                 onClick={handleConfirm}
-                className={`w-full md:w-auto inline-flex justify-center rounded-sm px-5 py-2 text-xs font-bold text-white transition-all uppercase tracking-widest border-2
-                  ${options.type === 'error' ? 'bg-red-600 hover:bg-red-700 border-red-600 hover:border-red-700' : 
-                    options.type === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600 border-yellow-500 hover:border-yellow-600' : 
-                    'bg-primary-600 hover:bg-primary-700 border-primary-600 hover:border-primary-700'}`
+                className={`flex-1 px-6 py-3 font-semibold rounded-full min-h-[48px] text-white transition-transform hover:-translate-y-px shadow-sm
+                  ${options.type === 'error' ? 'bg-red-500 hover:bg-red-600 shadow-red-500/30' : 
+                    options.type === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600 shadow-yellow-500/30' : 
+                    'bg-[var(--primary-500)] hover:bg-[var(--primary-600)] shadow-[var(--primary-500)]/30'}`
                 }
               >
                 {options.confirmText || "OK"}
               </button>
-              {options.showCancel && (
-                <button
-                  onClick={handleCancel}
-                  className="w-full md:w-auto inline-flex justify-center rounded-sm border-2 border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-5 py-2 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all uppercase tracking-widest"
-                >
-                  {options.cancelText || "CANCEL"}
-                </button>
-              )}
             </div>
           </div>
         </div>

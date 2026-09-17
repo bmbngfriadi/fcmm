@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Montserrat, Roboto_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { AlertProvider } from "@/components/AlertProvider";
 import "./globals.css";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: "--font-poppins",
   subsets: ["latin"],
 });
 
@@ -30,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} ${robotoMono.variable} font-sans antialiased`}
+        className={`${poppins.variable} font-sans antialiased`}
       >
         <Providers>
           <AlertProvider>

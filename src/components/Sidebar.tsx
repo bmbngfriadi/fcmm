@@ -2,112 +2,172 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Printer, BarChart3, Settings, LogOut, X } from "lucide-react";
+import { Users, Printer, BarChart3, Settings, LogOut, LayoutDashboard, MoreHorizontal } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export function Sidebar({ isOpen, setIsOpen }: { isOpen?: boolean, setIsOpen?: (val: boolean) => void }) {
+export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   
   const isAdmin = session?.user?.role === "ADMIN";
 
   const navItems = [
-    { name: "Dashboard", href: "/admin", icon: BarChart3, show: true },
+    { name: "Dashboard", href: "/admin", icon: LayoutDashboard, show: true },
     { name: "Analytics", href: "/admin/analytics", icon: BarChart3, show: true },
     { name: "Data Entry", href: "/admin/entry", icon: Printer, show: true },
-    { name: "User Management", href: "/admin/users", icon: Users, show: isAdmin },
+    { name: "Users", href: "/admin/users", icon: Users, show: isAdmin },
     { name: "Settings", href: "/admin/settings", icon: Settings, show: isAdmin || session?.user?.role === "LEADER" },
   ];
 
-  const sidebarContent = (
-    <div className="flex flex-col w-64 bg-zinc-900 border-r-2 border-zinc-800 text-zinc-100 h-full">
-      <div className="flex flex-col items-center justify-center py-8 border-b-2 border-zinc-800 relative">
-        {setIsOpen && (
-          <button 
-            onClick={() => setIsOpen(false)}
-            className="md:hidden absolute top-4 right-4 p-2 text-zinc-500 hover:text-white rounded-sm"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        )}
-        <div className="w-16 h-16 mb-4 flex items-center justify-center bg-white rounded-sm p-1.5 border border-zinc-700 shadow-[2px_2px_0px_rgba(220,38,38,1)]">
-          <img src="/fcmm/logo.png?v=2" alt="Logo" className="max-w-full max-h-full object-contain" />
+  const visibleItems = navItems.filter(item => item.show);
+  // For mobile bottom nav, take first 4, if more than 4, put rest in "More"
+  const bottomNavItems = visibleItems.slice(0, 4);
+  const hasMore = visibleItems.length > 4;
+  const moreItems = visibleItems.slice(4);
+
+  return (
+    <>
+      {/* Desktop Sidebar (lg:flex) */}
+      <div className="hidden lg:flex flex-col w-72 sticky top-6 h-[calc(100vh-3rem)] glass-card overflow-hidden shrink-0 z-10">
+        <div className="p-8 border-b border-[var(--border-color)] flex flex-col items-center">
+          <div className="w-16 h-16 bg-[var(--bg-card)] rounded-2xl p-2 flex items-center justify-center mb-4 shadow-sm border border-[var(--border-color)]">
+            <img src="/fcmm/logo.png" alt="Logo" className="max-w-full max-h-full object-contain filter drop-shadow-sm" onError={(e) => e.currentTarget.style.display = 'none'} />
+          </div>
+          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">FCMM<span className="text-[var(--primary-500)]">System</span></h2>
         </div>
-        <span className="text-xl font-black uppercase tracking-widest text-white">FCMM<span className="text-primary-500">SYS</span></span>
+        
+        <div className="flex-1 overflow-y-auto py-6 px-4">
+          <div className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-4 px-2">Menu Utama</div>
+          <nav className="space-y-1">
+            {visibleItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`group flex items-center px-4 py-3.5 rounded-xl transition-all duration-300 font-semibold text-sm ${
+                    isActive 
+                      ? "bg-[var(--primary-500)] text-white shadow-[0_4px_12px_rgba(181,32,37,0.25)]" 
+                      : "text-[var(--text-secondary)] hover:bg-[var(--bg-color)] hover:text-[var(--text-primary)] hover:translate-x-1"
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 mr-3 transition-transform ${isActive ? "scale-110" : "group-hover:scale-110"}`} />
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="p-5 border-t border-[var(--border-color)] bg-[var(--bg-color)]/30">
+          <div className="flex items-center mb-4 bg-[var(--bg-card)] p-3 rounded-xl border border-[var(--border-color)] shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-[var(--primary-500)] flex items-center justify-center text-white font-bold mr-3 shadow-sm">
+              {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="overflow-hidden">
+              <p className="font-bold text-[var(--text-primary)] text-sm truncate">{session?.user?.name}</p>
+              <p className="text-xs text-[var(--text-secondary)] font-medium capitalize truncate">{session?.user?.role?.toLowerCase()}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
+            className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-bold text-[var(--danger-500)] bg-[var(--danger-500)]/5 hover:bg-[var(--danger-500)]/10 border border-[var(--danger-500)]/30 hover:border-[var(--danger-500)] rounded-xl transition-all duration-300 hover:shadow-[0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 group"
+          >
+            <LogOut className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            Keluar
+          </button>
+        </div>
       </div>
-      
-      <div className="flex-1 overflow-y-auto py-6">
-        <nav className="space-y-2 px-4">
-          <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Main Menu</div>
-          {navItems.filter(item => item.show).map((item) => {
+
+      {/* Mobile Bottom Navigation (lg:hidden) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 glass-card rounded-t-3xl rounded-b-none border-b-0 pb-[env(safe-area-inset-bottom)] z-40 shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+        <div className="flex justify-around items-center px-2 py-2">
+          {bottomNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
-            
             return (
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={() => setIsOpen && setIsOpen(false)}
-                className={`group flex items-center px-4 py-3 rounded-sm transition-all duration-200 uppercase text-xs font-bold tracking-wider border-2 ${
-                  isActive 
-                    ? "bg-zinc-800 border-primary-600 text-white" 
-                    : "border-transparent text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                }`}
+                className="flex-1 flex flex-col items-center py-2 px-1 relative group"
               >
-                <Icon
-                  className={`w-4 h-4 mr-3 transition-transform duration-200 group-hover:scale-110 ${isActive ? "text-primary-500" : "text-zinc-500 group-hover:text-zinc-300"}`}
-                  aria-hidden="true"
-                />
-                {item.name}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-[var(--primary-500)]/10 text-[var(--primary-500)] scale-110' : 'text-[var(--text-secondary)]'}`}>
+                  <Icon className={`w-5 h-5 ${isActive ? 'fill-[var(--primary-500)]/10' : ''}`} />
+                </div>
+                <span className={`text-[10px] font-semibold mt-1 transition-all whitespace-nowrap ${isActive ? 'text-[var(--primary-500)]' : 'text-[var(--text-secondary)]'}`}>
+                  {item.name}
+                </span>
               </Link>
             );
           })}
-        </nav>
-      </div>
-      
-      <div className="p-4 border-t-2 border-zinc-800 bg-zinc-950">
-        <div className="flex items-center text-sm mb-4">
-          <div className="w-8 h-8 bg-primary-600 flex items-center justify-center text-white font-bold mr-3 flex-shrink-0 border-2 border-primary-800">
-            {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
-          </div>
-          <div className="overflow-hidden">
-            <p className="font-bold text-white text-xs uppercase tracking-wider truncate">{session?.user?.name}</p>
-            <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest truncate">ROLE: {session?.user?.role}</p>
-          </div>
+          
+          {hasMore && (
+            <button
+              onClick={() => setShowMoreMenu(true)}
+              className="flex-1 flex flex-col items-center py-2 px-1 relative group"
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-[var(--text-secondary)] transition-all duration-300">
+                <MoreHorizontal className="w-5 h-5" />
+              </div>
+              <span className="text-[10px] font-semibold mt-1 text-[var(--text-secondary)] whitespace-nowrap">
+                Lainnya
+              </span>
+            </button>
+          )}
         </div>
-        <button
-          onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
-          className="flex items-center justify-center w-full px-2 py-3 text-xs font-bold text-red-500 border-2 border-zinc-800 hover:bg-red-950 hover:border-red-900 hover:text-red-400 rounded-sm transition-colors uppercase tracking-widest"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          TERMINATE SESS
-        </button>
-      </div>
-    </div>
-  );
-
-  return (
-    <>
-      {/* Desktop Sidebar */}
-      <div className="hidden md:flex flex-col h-screen sticky top-0">
-        {sidebarContent}
       </div>
 
-      {/* Mobile Drawer Sidebar */}
-      {mounted && isOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex">
+      {/* Mobile Drawer (Bottom Sheet) */}
+      {showMoreMenu && (
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end">
           <div 
-            className="fixed inset-0 bg-zinc-950/80 transition-opacity" 
-            onClick={() => setIsOpen && setIsOpen(false)}
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in"
+            onClick={() => setShowMoreMenu(false)}
           />
-          <div className="relative flex-1 flex flex-col max-w-xs w-full animate-in slide-in-from-left duration-200">
-            {sidebarContent}
+          <div className="relative w-full bg-[var(--bg-card)] rounded-t-[32px] p-6 animate-slide-up-sheet shadow-2xl border-t border-[var(--border-color)]">
+            <div className="w-12 h-1.5 bg-[var(--border-color)] rounded-full mx-auto mb-6"></div>
+            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Menu Lainnya</h3>
+            
+            <div className="space-y-2 mb-6">
+              {moreItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setShowMoreMenu(false)}
+                    className={`flex items-center p-4 rounded-xl transition-all font-semibold ${
+                      isActive ? 'bg-[var(--primary-500)]/10 text-[var(--primary-500)]' : 'bg-[var(--bg-color)] text-[var(--text-primary)]'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 mr-4" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="pt-4 border-t border-[var(--border-color)] flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full bg-[var(--primary-500)] flex items-center justify-center text-white font-bold mr-3 shadow-sm">
+                  {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                </div>
+                <div>
+                  <p className="font-bold text-[var(--text-primary)] text-sm">{session?.user?.name}</p>
+                  <p className="text-xs text-[var(--text-secondary)] capitalize">{session?.user?.role?.toLowerCase()}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
+                className="w-10 h-10 flex items-center justify-center text-[var(--danger-500)] bg-[var(--danger-500)]/5 border border-[var(--danger-500)]/30 rounded-full hover:bg-[var(--danger-500)]/10 hover:border-[var(--danger-500)] transition-all duration-300 hover:shadow-[0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 group"
+              >
+                <LogOut className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </button>
+            </div>
           </div>
         </div>
       )}

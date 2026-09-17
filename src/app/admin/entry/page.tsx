@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Save, Loader2, UploadCloud, FileText, X, Send, EyeOff } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useAlert } from "@/components/AlertProvider";
@@ -8,7 +8,6 @@ import { useAlert } from "@/components/AlertProvider";
 const CATEGORIES = ["PRINT", "COPY"];
 const COLOR_MODES = ["BW", "COLOR"];
 
-// Helper to format category for the tab
 const formatCategory = (cat: string) => {
   if (cat === "PRINT") return "Jumlah Print";
   if (cat === "COPY") return "Jumlah Copy";
@@ -38,15 +37,6 @@ export default function DataEntryPage() {
   const [uploading, setUploading] = useState(false);
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 
-  // formData shape:
-  // {
-  //   [userId]: {
-  //     [category]: { // PRINT, COPY, SCAN
-  //       BW: { initial, week1, week2, week3, week4, week5 },
-  //       COLOR: { initial, week1, week2, week3, week4, week5 }
-  //     }
-  //   }
-  // }
   const [formData, setFormData] = useState<Record<string, any>>({});
 
   const isAdmin = session?.user?.role === "ADMIN";
@@ -69,7 +59,6 @@ export default function DataEntryPage() {
     }
   }, [month, year, activeCategory, usersList, canSeeAllUsers]);
 
-  // Handle ESC key to close modals
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -116,12 +105,12 @@ export default function DataEntryPage() {
         setReferenceFiles(prev => ({...prev, [selectedWeek]: data.fileUrl}));
         setShowUploadModal(false);
         setFileToUpload(null);
-        showAlert({ title: "Success", message: "File uploaded successfully!", type: "success" });
+        showAlert({ title: "Berhasil", message: "File berhasil diunggah!", type: "success" });
       } else {
-        showAlert({ title: "Error", message: "Failed to upload file.", type: "error" });
+        showAlert({ title: "Gagal", message: "Gagal mengunggah file.", type: "error" });
       }
     } catch (error) {
-      showAlert({ title: "Error", message: "An unexpected error occurred.", type: "error" });
+      showAlert({ title: "Error", message: "Terjadi kesalahan sistem.", type: "error" });
     } finally {
       setUploading(false);
     }
@@ -132,10 +121,7 @@ export default function DataEntryPage() {
     const res = await fetch(`/fcmm/api/records?month=${month}&year=${year}`);
     if (res.ok) {
       const dbRecords = await res.json();
-      
       const newForm: Record<string, any> = {};
-      
-      // Initialize state for users
       const targetUsers = canSeeAllUsers ? usersList : [{ id: session?.user?.id, name: session?.user?.name, username: (session?.user as any)?.username }];
       
       targetUsers.forEach(u => {
@@ -148,7 +134,6 @@ export default function DataEntryPage() {
         });
       });
 
-      // Populate with DB data
       dbRecords.forEach((r: any) => {
         if (newForm[r.userId] && newForm[r.userId][r.category]) {
            newForm[r.userId][r.category][r.colorMode] = {
@@ -194,7 +179,6 @@ export default function DataEntryPage() {
           COLOR_MODES.forEach(color => {
             const data = formData[u.id]?.[cat]?.[color];
             if (data) {
-              // Only save if at least one field is filled, or if we need to ensure defaults
               recordsToSave.push({
                 userId: u.id,
                 category: cat,
@@ -222,12 +206,12 @@ export default function DataEntryPage() {
       });
 
       if (res.ok) {
-        showAlert({ title: "Success", message: "Data saved successfully!", type: "success" });
+        showAlert({ title: "Berhasil", message: "Data berhasil disimpan!", type: "success" });
       } else {
-        showAlert({ title: "Error", message: "Failed to save data.", type: "error" });
+        showAlert({ title: "Gagal", message: "Gagal menyimpan data.", type: "error" });
       }
     } catch (e) {
-      showAlert({ title: "Error", message: "Failed to save data.", type: "error" });
+      showAlert({ title: "Error", message: "Terjadi kesalahan saat menyimpan data.", type: "error" });
     } finally {
       setSaving(false);
     }
@@ -235,7 +219,7 @@ export default function DataEntryPage() {
 
   const handleSendEmail = async () => {
     if (selectedUsers.length === 0) {
-      showAlert({ title: "Warning", message: "Please select at least one user to notify.", type: "warning" });
+      showAlert({ title: "Peringatan", message: "Pilih setidaknya satu pengguna untuk diberitahu.", type: "warning" });
       return;
     }
     
@@ -248,13 +232,13 @@ export default function DataEntryPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        showAlert({ title: "Success", message: `Successfully sent email to ${data.sentCount} user(s).`, type: "success" });
+        showAlert({ title: "Berhasil", message: `Email berhasil dikirim ke ${data.sentCount} pengguna.`, type: "success" });
         setSelectedUsers([]);
       } else {
-        showAlert({ title: "Error", message: data.error || "Failed to send email.", type: "error" });
+        showAlert({ title: "Gagal", message: data.error || "Gagal mengirim email.", type: "error" });
       }
     } catch (e) {
-      showAlert({ title: "Error", message: "Failed to send email.", type: "error" });
+      showAlert({ title: "Error", message: "Terjadi kesalahan saat mengirim email.", type: "error" });
     } finally {
       setSendingEmail(false);
     }
@@ -293,7 +277,6 @@ export default function DataEntryPage() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number, color: string, field: string) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      // Find the next input vertically (idx + 1)
       const nextInput = document.getElementById(`input-${idx + 1}-${color}-${field}`);
       if (nextInput) {
         (nextInput as HTMLInputElement).focus();
@@ -302,7 +285,6 @@ export default function DataEntryPage() {
   };
 
   const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
-    // Prevent the scroll wheel from changing the number value
     (e.target as HTMLElement).blur();
   };
 
@@ -318,7 +300,7 @@ export default function DataEntryPage() {
         onChange={(e) => handleInputChange(userId, activeCategory, color, field, e.target.value)} 
         onKeyDown={(e) => handleKeyDown(e, idx, color, field)}
         onWheel={handleWheel}
-        className={`w-[70px] px-1 py-1 text-right border border-zinc-300 dark:border-zinc-700 rounded text-sm bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-primary-500 ${(isHidden || isReadOnly) ? 'opacity-50 bg-zinc-100 cursor-not-allowed dark:bg-zinc-900' : ''}`} 
+        className={`w-[70px] px-2 py-1.5 text-right border border-[var(--border-color)] rounded-lg text-sm bg-[var(--bg-color)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] ${(isHidden || isReadOnly) ? 'opacity-50 cursor-not-allowed' : ''}`} 
       />
     );
   };
@@ -328,14 +310,11 @@ export default function DataEntryPage() {
     const prev = formData[userId]?.[activeCategory]?.[color]?.[prevField];
     const usage = calculateUsage(current, prev);
     return (
-      <span className="font-semibold text-primary-600 dark:text-primary-400">{usage}</span>
+      <span className="font-bold text-[var(--primary-600)]">{usage}</span>
     );
   };
 
   const renderTotalMonth = (userId: string, color: string) => {
-    // Total Month = W5 - Initial. (Or the last filled week - Initial)
-    // To be precise, it's the sum of all usage. Which mathematically is (Last_Value - Initial)
-    // Let's find the last filled week
     const data = formData[userId]?.[activeCategory]?.[color];
     if (!data) return "-";
     
@@ -349,7 +328,6 @@ export default function DataEntryPage() {
     return calculateUsage(lastValue, data.initial);
   };
 
-  // Grand total calculations
   const calculateGrandTotalUsage = (color: string, currentField: string, prevField: string) => {
     let total = 0;
     const targetUsers = session?.user?.role === "ADMIN" ? usersList : [{ id: session?.user?.id }];
@@ -395,19 +373,18 @@ export default function DataEntryPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-zinc-900 p-6 border-2 border-zinc-200 dark:border-zinc-800 rounded-sm relative gap-4">
+      <div className="page-header">
         <div>
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">Data Entry Spreadsheet</h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-mono uppercase tracking-wider">Input machine absolute values. Totals calculate automatically.</p>
+          <h1>Input Meteran Data</h1>
+          <p>Masukkan nilai absolut dari mesin fotokopi. Kalkulasi otomatis.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3 md:gap-4 w-full md:w-auto">
-          <select value={month} onChange={(e) => setMonth(parseInt(e.target.value))} className="flex-1 md:flex-none px-4 py-2.5 border-2 rounded-sm bg-zinc-50 text-zinc-900 border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-primary-500 font-mono text-sm uppercase transition-colors">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <select value={month} onChange={(e) => setMonth(parseInt(e.target.value))} className="form-control py-2 w-full md:w-[140px]">
             {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-              <option key={m} value={m}>Month {m}</option>
+              <option key={m} value={m}>Bulan {m}</option>
             ))}
           </select>
-          <select value={year} onChange={(e) => setYear(parseInt(e.target.value))} className="flex-1 md:flex-none px-4 py-2.5 border-2 rounded-sm bg-zinc-50 text-zinc-900 border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-primary-500 font-mono text-sm uppercase transition-colors">
+          <select value={year} onChange={(e) => setYear(parseInt(e.target.value))} className="form-control py-2 w-full md:w-[140px]">
             {[2025, 2026, 2027].map(y => (
               <option key={y} value={y}>{y}</option>
             ))}
@@ -416,244 +393,200 @@ export default function DataEntryPage() {
             <button 
               onClick={handleSave} 
               disabled={saving || loading}
-              className="w-full md:w-auto flex justify-center items-center px-6 py-2.5 bg-primary-600 text-white font-bold rounded-sm border-2 border-primary-600 hover:bg-primary-700 hover:border-primary-700 disabled:opacity-50 transition-colors uppercase tracking-widest text-xs"
+              className="w-full md:w-auto btn-primary"
             >
-              {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
-              Save Data
+              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+              <span className="ml-2">Simpan Data</span>
             </button>
           )}
           {session?.user?.role === "ADMIN" && (
             <button 
               onClick={handleSendEmail} 
               disabled={sendingEmail || loading}
-              className="w-full md:w-auto flex justify-center items-center px-6 py-2.5 bg-orange-600 text-white font-bold rounded-sm border-2 border-orange-600 hover:bg-orange-700 hover:border-orange-700 disabled:opacity-50 transition-colors uppercase tracking-widest text-xs"
+              className="w-full md:w-auto btn-primary"
             >
-              {sendingEmail ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Send className="w-5 h-5 mr-2" />}
-              Send Email
+              {sendingEmail ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+              <span className="ml-2">Kirim Email</span>
             </button>
           )}
         </div>
       </div>
 
-      <div 
-        className="bg-white dark:bg-zinc-900 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative overflow-hidden"
-      >
+      <div className="glass-card overflow-hidden">
         {/* Tabs */}
-        <div className="flex border-b border-zinc-300 dark:border-zinc-700/50 bg-zinc-100 dark:bg-zinc-950">
+        <div className="flex p-2 bg-[var(--bg-color)] border-b border-[var(--border-color)]">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`relative flex-1 py-3 mx-1 my-1 rounded-sm text-center font-black text-xs uppercase tracking-widest transition-all overflow-hidden ${activeCategory === cat ? 'bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 border-2 border-zinc-900 dark:border-zinc-100' : 'bg-transparent text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 border-2 border-transparent'}`}
+              className={`flex-1 py-3 px-4 mx-1 rounded-xl text-center font-bold text-sm transition-all ${activeCategory === cat ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm' : 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-card)]/50'}`}
             >
-              <span className="relative z-10">{formatCategory(cat)}</span>
+              {formatCategory(cat)}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <div className="p-12 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>
+          <div className="p-12 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[var(--primary-500)]" /></div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-max border-collapse border border-zinc-300 dark:border-zinc-700 text-sm">
+          <div className="overflow-x-auto p-4">
+            <table className="min-w-max border-collapse border border-[var(--border-color)] text-sm w-full">
               <thead>
-                {/* Header Row 1 */}
-                <tr className="bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 divide-x divide-zinc-800 dark:divide-zinc-200">
-                  <th rowSpan={3} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky left-0 z-20 bg-zinc-900 dark:bg-zinc-950 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">
+                <tr className="bg-[var(--bg-color)] text-[var(--text-primary)] divide-x divide-[var(--border-color)]">
+                  <th rowSpan={3} className="px-3 py-2 text-center font-extrabold border-b border-[var(--border-color)] md:sticky left-0 z-20 bg-[var(--bg-color)]">
                     {session?.user?.role === "ADMIN" ? "Sel" : "No"}
                   </th>
                   {session?.user?.role === "ADMIN" && (
-                    <th rowSpan={3} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky left-[36px] z-20 bg-zinc-900 dark:bg-zinc-950 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">Hide</th>
+                    <th rowSpan={3} className="px-2 py-2 text-center font-extrabold border-b border-[var(--border-color)] md:sticky left-[42px] z-20 bg-[var(--bg-color)]">Sembunyikan</th>
                   )}
-                  <th rowSpan={3} className={`px-4 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-20 bg-zinc-900 dark:bg-zinc-950 shadow-[2px_0_5px_rgba(0,0,0,0.1)]`}>Username</th>
-                  <th rowSpan={3} className="px-3 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 hidden md:table-cell">User ID</th>
+                  <th rowSpan={3} className={`px-4 py-2 text-center font-extrabold border-b border-[var(--border-color)] md:sticky ${session?.user?.role === "ADMIN" ? 'left-[108px]' : 'left-[42px]'} z-20 bg-[var(--bg-color)]`}>Nama Pengguna</th>
+                  <th rowSpan={3} className="px-3 py-2 text-center font-extrabold border-b border-[var(--border-color)]">User ID</th>
                   
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>Initial (Baseline)</span>
-                      {!isReadOnly && <button onClick={() => { setSelectedWeek("Initial"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload Initial Reference"><UploadCloud size={14}/></button>}
-                      {referenceFiles["Initial"] && <button onClick={() => { setViewingFileUrl(referenceFiles["Initial"]); setShowViewModal(true); }} className="text-primary-600 hover:text-primary-800 transition-colors" title="View Initial Reference"><FileText size={14}/></button>}
-                    </div>
-                  </th>
-                  
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>W1</span>
-                      {!isReadOnly && <button onClick={() => { setSelectedWeek("W1"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W1 Reference"><UploadCloud size={14}/></button>}
-                      {referenceFiles["W1"] && <button onClick={() => { setViewingFileUrl(referenceFiles["W1"]); setShowViewModal(true); }} className="text-primary-600 hover:text-primary-800 transition-colors" title="View W1 Reference"><FileText size={14}/></button>}
-                    </div>
-                  </th>
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W1</th>
-                  
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>W2</span>
-                      {!isReadOnly && <button onClick={() => { setSelectedWeek("W2"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W2 Reference"><UploadCloud size={14}/></button>}
-                      {referenceFiles["W2"] && <button onClick={() => { setViewingFileUrl(referenceFiles["W2"]); setShowViewModal(true); }} className="text-primary-600 hover:text-primary-800 transition-colors" title="View W2 Reference"><FileText size={14}/></button>}
-                    </div>
-                  </th>
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W2</th>
-                  
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>W3</span>
-                      {!isReadOnly && <button onClick={() => { setSelectedWeek("W3"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W3 Reference"><UploadCloud size={14}/></button>}
-                      {referenceFiles["W3"] && <button onClick={() => { setViewingFileUrl(referenceFiles["W3"]); setShowViewModal(true); }} className="text-primary-600 hover:text-primary-800 transition-colors" title="View W3 Reference"><FileText size={14}/></button>}
-                    </div>
-                  </th>
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W3</th>
-                  
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>W4</span>
-                      {!isReadOnly && <button onClick={() => { setSelectedWeek("W4"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W4 Reference"><UploadCloud size={14}/></button>}
-                      {referenceFiles["W4"] && <button onClick={() => { setViewingFileUrl(referenceFiles["W4"]); setShowViewModal(true); }} className="text-primary-600 hover:text-primary-800 transition-colors" title="View W4 Reference"><FileText size={14}/></button>}
-                    </div>
-                  </th>
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W4</th>
-                  
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200 bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white">
-                    <div className="flex items-center justify-center gap-1.5">
-                      <span>W5</span>
-                      {!isReadOnly && <button onClick={() => { setSelectedWeek("W5"); setShowUploadModal(true); }} className="hover:text-primary-700 transition-colors" title="Upload W5 Reference"><UploadCloud size={14}/></button>}
-                      {referenceFiles["W5"] && <button onClick={() => { setViewingFileUrl(referenceFiles["W5"]); setShowViewModal(true); }} className="text-primary-600 hover:text-primary-800 transition-colors" title="View W5 Reference"><FileText size={14}/></button>}
-                    </div>
-                  </th>
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total W5</th>
-                  
-                  <th colSpan={2} className="px-2 py-1 text-center font-bold border-2 border-zinc-800 dark:border-zinc-200">Total Bulan Ini</th>
+                  {['Initial (Baseline)', 'W1', 'W2', 'W3', 'W4', 'W5'].map((wLabel, index) => {
+                    const wKey = index === 0 ? 'Initial' : `W${index}`;
+                    return (
+                      <React.Fragment key={wKey}>
+                        <th colSpan={2} className="px-3 py-2 text-center font-extrabold border-b border-[var(--border-color)] bg-[var(--warning-500)]/10 text-[var(--warning-500)]">
+                          <div className="flex items-center justify-center gap-2">
+                            <span>{wLabel}</span>
+                            {!isReadOnly && <button onClick={() => { setSelectedWeek(wKey); setShowUploadModal(true); }} className="hover:text-[var(--primary-600)] transition-colors" title={`Upload ${wKey} Reference`}><UploadCloud size={14}/></button>}
+                            {referenceFiles[wKey] && <button onClick={() => { setViewingFileUrl(referenceFiles[wKey]); setShowViewModal(true); }} className="text-[var(--primary-500)] hover:text-[var(--primary-700)] transition-colors" title={`View ${wKey} Reference`}><FileText size={14}/></button>}
+                          </div>
+                        </th>
+                        {index > 0 && <th colSpan={2} className="px-3 py-2 text-center font-bold border-b border-[var(--border-color)] bg-[var(--bg-color)]">Total {wKey}</th>}
+                      </React.Fragment>
+                    )
+                  })}
+                  <th colSpan={2} className="px-3 py-2 text-center font-extrabold border-b border-[var(--border-color)] bg-[var(--danger-500)]/10 text-[var(--danger-500)]">Total Bulan Ini</th>
                 </tr>
-                {/* Header Row 2 - B&W / Color */}
-                <tr className="bg-primary-200 dark:bg-primary-900 text-black dark:text-white divide-x divide-gray-300 dark:divide-gray-600">
+                
+                <tr className="bg-[var(--bg-card)] text-[var(--text-secondary)] divide-x divide-[var(--border-color)]">
                   {Array.from({length: 12}).map((_, i) => (
-                    <td key={i} colSpan={2} className="p-0 border-b border-zinc-300 dark:border-zinc-700">
-                      <div className="flex divide-x divide-gray-300 dark:divide-gray-600">
-                        <div className="flex-1 px-1 py-1 text-center font-semibold text-[11px]">Black & White</div>
-                        <div className="flex-1 px-1 py-1 text-center font-semibold text-[11px]">Color</div>
+                    <td key={i} colSpan={2} className="p-0 border-b border-[var(--border-color)]">
+                      <div className="flex divide-x divide-[var(--border-color)]">
+                        <div className="flex-1 px-1 py-1.5 text-center font-semibold text-[11px]">B&W</div>
+                        <div className="flex-1 px-1 py-1.5 text-center font-semibold text-[11px] text-[var(--primary-500)]">Color</div>
                       </div>
                     </td>
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-zinc-900 divide-y divide-zinc-200 dark:divide-zinc-800">
+              
+              <tbody className="divide-y divide-[var(--border-color)]">
                 {targetUsers.filter(u => !(isLeader && u.isHidden)).map((u, idx) => (
-                  <tr key={u.id || `user-${idx}`} className={`hover:bg-zinc-50 dark:hover:bg-zinc-800 divide-x divide-zinc-200 dark:divide-zinc-800 transition-colors ${u.isHidden ? 'opacity-60 bg-zinc-200 dark:bg-zinc-800' : ''}`}>
-                    <td className="px-2 py-1 text-center text-zinc-500 sticky left-0 z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
+                  <tr key={u.id || `user-${idx}`} className={`hover:bg-[var(--bg-color)] divide-x divide-[var(--border-color)] transition-colors ${u.isHidden ? 'opacity-50 bg-[var(--bg-color)]/50' : ''}`}>
+                    <td className="px-3 py-2 text-center sticky left-0 z-10 bg-[var(--bg-card)] shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
                       {session?.user?.role === "ADMIN" ? (
-                        <input type="checkbox" checked={selectedUsers.includes(u.id)} onChange={() => toggleUserSelection(u.id)} className="w-4 h-4 text-primary-600 rounded border-gray-300 cursor-pointer" />
+                        <input type="checkbox" checked={selectedUsers.includes(u.id)} onChange={() => toggleUserSelection(u.id)} className="w-4 h-4 rounded text-[var(--primary-500)] focus:ring-[var(--primary-500)] cursor-pointer" />
                       ) : (
                         idx + 1
                       )}
                     </td>
                     {session?.user?.role === "ADMIN" && (
-                      <td className="px-2 py-1 text-center sticky left-[36px] z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
+                      <td className="px-2 py-2 text-center md:sticky left-[42px] z-10 bg-[var(--bg-card)] shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
                         {togglingHide === u.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin mx-auto text-primary-500" />
+                          <Loader2 className="w-4 h-4 animate-spin mx-auto text-[var(--primary-500)]" />
                         ) : (
-                          <input type="checkbox" checked={!!u.isHidden} onChange={() => handleToggleHide(u.id, !!u.isHidden)} className="w-4 h-4 text-gray-600 rounded border-gray-300 cursor-pointer" title="Hide this user" />
+                          <input type="checkbox" checked={!!u.isHidden} onChange={() => handleToggleHide(u.id, !!u.isHidden)} className="w-4 h-4 rounded text-gray-500 cursor-pointer" title="Hide this user" />
                         )}
                       </td>
                     )}
-                    <td className={`px-3 py-1 font-medium text-zinc-900 dark:text-zinc-100 whitespace-nowrap sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_rgba(0,0,0,0.05)]`}>
-                      {u.name} {u.isHidden && <span className="text-xs text-red-500 ml-1">(Hidden)</span>}
+                    <td className={`px-4 py-2 font-semibold text-[var(--text-primary)] whitespace-nowrap md:sticky ${session?.user?.role === "ADMIN" ? 'left-[108px]' : 'left-[42px]'} z-10 bg-[var(--bg-card)] shadow-[2px_0_5px_rgba(0,0,0,0.02)]`}>
+                      {u.name} {u.isHidden && <span className="text-xs text-[var(--danger-500)] ml-1">(Hidden)</span>}
                     </td>
-                    <td className="px-2 py-1 text-zinc-500 hidden md:table-cell">{u.username}</td>
+                    <td className="px-3 py-2 text-[var(--text-secondary)]">{u.username}</td>
                     
                     {/* Initial */}
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "initial")}</td>
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "COLOR", "initial")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "BW", "initial")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "COLOR", "initial")}</td>
                     
                     {/* W1 */}
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "week1")}</td>
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "COLOR", "week1")}</td>
-                    {/* Total W1 */}
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "BW", "week1", "initial")}</td>
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "COLOR", "week1", "initial")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "BW", "week1")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "COLOR", "week1")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "BW", "week1", "initial")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "COLOR", "week1", "initial")}</td>
                     
                     {/* W2 */}
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "week2")}</td>
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "COLOR", "week2")}</td>
-                    {/* Total W2 */}
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "BW", "week2", "week1")}</td>
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "COLOR", "week2", "week1")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "BW", "week2")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "COLOR", "week2")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "BW", "week2", "week1")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "COLOR", "week2", "week1")}</td>
                     
                     {/* W3 */}
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "week3")}</td>
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "COLOR", "week3")}</td>
-                    {/* Total W3 */}
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "BW", "week3", "week2")}</td>
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "COLOR", "week3", "week2")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "BW", "week3")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "COLOR", "week3")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "BW", "week3", "week2")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "COLOR", "week3", "week2")}</td>
                     
                     {/* W4 */}
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "week4")}</td>
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "COLOR", "week4")}</td>
-                    {/* Total W4 */}
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "BW", "week4", "week3")}</td>
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "COLOR", "week4", "week3")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "BW", "week4")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "COLOR", "week4")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "BW", "week4", "week3")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "COLOR", "week4", "week3")}</td>
                     
                     {/* W5 */}
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "BW", "week5")}</td>
-                    <td className="px-1 py-1">{renderCell(u.id, idx, "COLOR", "week5")}</td>
-                    {/* Total W5 */}
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "BW", "week5", "week4")}</td>
-                    <td className="px-2 py-1 text-right bg-zinc-100 dark:bg-zinc-950">{renderCalculatedCell(u.id, "COLOR", "week5", "week4")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "BW", "week5")}</td>
+                    <td className="px-1 py-1 bg-[var(--warning-500)]/5 text-center">{renderCell(u.id, idx, "COLOR", "week5")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "BW", "week5", "week4")}</td>
+                    <td className="px-3 py-2 text-center bg-[var(--bg-color)]">{renderCalculatedCell(u.id, "COLOR", "week5", "week4")}</td>
                     
                     {/* Total Bulan */}
-                    <td className="px-2 py-1 text-right font-bold text-red-600 bg-red-50 dark:bg-red-950">{renderTotalMonth(u.id, "BW")}</td>
-                    <td className="px-2 py-1 text-right font-bold text-red-600 bg-red-50 dark:bg-red-950">{renderTotalMonth(u.id, "COLOR")}</td>
+                    <td className="px-3 py-2 text-center font-extrabold text-[var(--danger-500)] bg-[var(--danger-500)]/10">{renderTotalMonth(u.id, "BW")}</td>
+                    <td className="px-3 py-2 text-center font-extrabold text-[var(--danger-500)] bg-[var(--danger-500)]/10">{renderTotalMonth(u.id, "COLOR")}</td>
                   </tr>
                 ))}
                 
                 {/* Total Row */}
-                <tr className="bg-yellow-400 dark:bg-yellow-600 text-black dark:text-white font-bold divide-x divide-gray-300">
-                  <td className="px-4 py-2 text-right uppercase sticky left-0 z-10 bg-yellow-400 shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
+                <tr className="bg-[var(--bg-color)] font-bold divide-x divide-[var(--border-color)]">
+                  <td className="px-4 py-3 md:sticky left-0 z-10 bg-[var(--bg-color)]"></td>
                   {session?.user?.role === "ADMIN" && (
-                    <td className="px-4 py-2 text-right uppercase sticky left-[36px] z-10 bg-yellow-400 shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
+                    <td className="px-4 py-3 md:sticky left-[42px] z-10 bg-[var(--bg-color)]"></td>
                   )}
-                  <td className={`px-4 py-2 text-right uppercase sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-10 bg-yellow-400 shadow-[2px_0_5px_rgba(0,0,0,0.1)]`}>Total</td>
-                  <td className="px-4 py-2 text-right uppercase hidden md:table-cell"></td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("BW", "initial")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("COLOR", "initial")}</td>
+                  <td className={`px-4 py-3 text-right md:sticky ${session?.user?.role === "ADMIN" ? 'left-[108px]' : 'left-[42px]'} z-10 bg-[var(--bg-color)]`}>Total</td>
+                  <td className="px-4 py-3 text-right"></td>
                   
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("BW", "week1")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("COLOR", "week1")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("BW", "week1", "initial")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("COLOR", "week1", "initial")}</td>
+                  <td className="px-3 py-3 text-center">{calculateGrandTotalInput("BW", "initial")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-500)]">{calculateGrandTotalInput("COLOR", "initial")}</td>
                   
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("BW", "week2")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("COLOR", "week2")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("BW", "week2", "week1")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("COLOR", "week2", "week1")}</td>
+                  <td className="px-3 py-3 text-center">{calculateGrandTotalInput("BW", "week1")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-500)]">{calculateGrandTotalInput("COLOR", "week1")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("BW", "week1", "initial")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("COLOR", "week1", "initial")}</td>
                   
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("BW", "week3")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("COLOR", "week3")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("BW", "week3", "week2")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("COLOR", "week3", "week2")}</td>
+                  <td className="px-3 py-3 text-center">{calculateGrandTotalInput("BW", "week2")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-500)]">{calculateGrandTotalInput("COLOR", "week2")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("BW", "week2", "week1")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("COLOR", "week2", "week1")}</td>
                   
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("BW", "week4")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("COLOR", "week4")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("BW", "week4", "week3")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("COLOR", "week4", "week3")}</td>
+                  <td className="px-3 py-3 text-center">{calculateGrandTotalInput("BW", "week3")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-500)]">{calculateGrandTotalInput("COLOR", "week3")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("BW", "week3", "week2")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("COLOR", "week3", "week2")}</td>
                   
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("BW", "week5")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalInput("COLOR", "week5")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("BW", "week5", "week4")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalUsage("COLOR", "week5", "week4")}</td>
+                  <td className="px-3 py-3 text-center">{calculateGrandTotalInput("BW", "week4")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-500)]">{calculateGrandTotalInput("COLOR", "week4")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("BW", "week4", "week3")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("COLOR", "week4", "week3")}</td>
                   
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalMonth("BW")}</td>
-                  <td className="px-2 py-2 text-right">{calculateGrandTotalMonth("COLOR")}</td>
+                  <td className="px-3 py-3 text-center">{calculateGrandTotalInput("BW", "week5")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-500)]">{calculateGrandTotalInput("COLOR", "week5")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("BW", "week5", "week4")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--primary-600)]">{calculateGrandTotalUsage("COLOR", "week5", "week4")}</td>
+                  
+                  <td className="px-3 py-3 text-center text-[var(--danger-500)]">{calculateGrandTotalMonth("BW")}</td>
+                  <td className="px-3 py-3 text-center text-[var(--danger-500)]">{calculateGrandTotalMonth("COLOR")}</td>
                 </tr>
                 
                 {/* Grandtotal Row */}
-                <tr className="bg-gradient-to-r from-orange-500 to-orange-600 text-white font-black divide-x divide-orange-400/50 shadow-inner">
-                  <td className="px-4 py-3 text-right uppercase tracking-wider text-sm sticky left-0 z-10 bg-orange-500 shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
+                <tr className="bg-[var(--primary-500)] text-white font-black divide-x divide-white/20">
+                  <td className="px-4 py-4 text-right sticky left-0 z-10 bg-[var(--primary-500)] shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
                   {session?.user?.role === "ADMIN" && (
-                    <td className="px-4 py-3 text-right uppercase tracking-wider text-sm sticky left-[36px] z-10 bg-orange-500 shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
+                    <td className="px-4 py-4 sticky left-[42px] z-10 bg-[var(--primary-500)] shadow-[2px_0_5px_rgba(0,0,0,0.1)]"></td>
                   )}
-                  <td className={`px-4 py-3 text-right uppercase tracking-wider text-sm sticky ${session?.user?.role === "ADMIN" ? 'left-[76px]' : 'left-[36px]'} z-10 bg-orange-500 shadow-[2px_0_5px_rgba(0,0,0,0.1)]`}>Grandtotal</td>
-                  <td className="px-4 py-3 hidden md:table-cell bg-orange-500"></td>
-                  <td colSpan={24} className="px-4 py-3 text-center text-xl drop-shadow-md">
-                     {(calculateGrandTotalMonth("BW") + calculateGrandTotalMonth("COLOR")).toLocaleString()}
+                  <td className={`px-4 py-4 text-right sticky ${session?.user?.role === "ADMIN" ? 'left-[108px]' : 'left-[42px]'} z-10 bg-[var(--primary-500)] shadow-[2px_0_5px_rgba(0,0,0,0.1)]`}>GRANDTOTAL</td>
+                  <td className="px-4 py-4 bg-[var(--primary-500)]"></td>
+                  <td colSpan={24} className="px-4 py-4 text-center text-2xl tracking-tight">
+                     {(calculateGrandTotalMonth("BW") + calculateGrandTotalMonth("COLOR")).toLocaleString()} Lembar
                   </td>
                 </tr>
               </tbody>
@@ -662,71 +595,64 @@ export default function DataEntryPage() {
         )}
       </div>
 
-      
-        {showUploadModal && (
-          <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <div className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200" onClick={() => setShowUploadModal(false)}></div>
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-              <div className="relative z-10 inline-block align-bottom bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-zinc-200 dark:border-zinc-800">
-                <form onSubmit={handleFileUpload}>
-                  <div className="px-6 pt-6 pb-4">
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
-                        Upload Reference File
-                      </h3>
-                      <button type="button" onClick={() => setShowUploadModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-gray-700 p-1.5 rounded-full">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <p className="text-sm text-zinc-500 dark:text-gray-400 mb-4">Upload a print/scan file as the reference for <strong>{selectedWeek}</strong> in {formatCategory(activeCategory)}, Month {month}, {year}.</p>
-                    <div className="space-y-5">
-                      <div>
-                        <input type="file" required accept="image/*,.pdf" onChange={(e) => setFileToUpload(e.target.files?.[0] || null)} className="block w-full text-sm text-zinc-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/20 dark:file:text-primary-400 dark:hover:file:bg-primary-900/40" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t border-zinc-200 dark:border-zinc-800">
-                    <button type="submit" disabled={uploading} className="w-full md:w-auto inline-flex justify-center items-center rounded-xl border border-transparent shadow-md shadow-primary-500/20 px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 text-sm font-bold text-white hover:from-primary-700 hover:to-primary-600 focus:outline-none transition-all disabled:opacity-50">
-                      {uploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <UploadCloud className="w-4 h-4 mr-2" />}
-                      {uploading ? 'Uploading...' : 'Upload'}
-                    </button>
-                    <button type="button" onClick={() => setShowUploadModal(false)} className="w-full md:w-auto inline-flex justify-center rounded-xl border border-zinc-300 dark:border-zinc-700 shadow-sm px-6 py-2.5 bg-white dark:bg-zinc-900 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none transition-all">
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
+      {showUploadModal && (
+        <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center md:p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={() => setShowUploadModal(false)}></div>
+          <div className="relative w-full md:max-w-md bg-[var(--bg-card)] rounded-t-[32px] md:rounded-3xl p-6 md:p-8 animate-slide-up-sheet md:animate-in md:zoom-in-95 shadow-2xl">
+            <div className="w-12 h-1.5 bg-[var(--border-color)] rounded-full mx-auto mb-6 md:hidden"></div>
+            
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-extrabold text-[var(--text-primary)]">Upload Referensi</h3>
+              <button type="button" onClick={() => setShowUploadModal(false)} className="text-[var(--text-secondary)] hover:bg-[var(--bg-color)] p-2 rounded-full transition-colors hidden md:block">
+                <X className="w-5 h-5" />
+              </button>
             </div>
-          </div>
-        )}
+            
+            <form onSubmit={handleFileUpload} className="space-y-4">
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                Unggah bukti foto/PDF referensi meteran untuk minggu <strong>{selectedWeek}</strong> - Kategori {formatCategory(activeCategory)}, Bulan {month}, {year}.
+              </p>
+              
+              <div className="form-group pt-2">
+                <input type="file" required accept="image/*,.pdf" onChange={(e) => setFileToUpload(e.target.files?.[0] || null)} className="w-full text-sm text-[var(--text-secondary)] file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--primary-500)]/10 file:text-[var(--primary-500)] hover:file:bg-[var(--primary-500)]/20 cursor-pointer" />
+              </div>
 
-        {showViewModal && viewingFileUrl && (
-          <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div className="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
-              <div className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200" onClick={() => setShowViewModal(false)}></div>
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-              <div className="relative z-10 inline-block align-middle bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:max-w-4xl sm:w-full border border-zinc-200 dark:border-zinc-800">
-                <div className="px-6 py-4 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800">
-                  <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Reference File - {selectedWeek}</h3>
-                  <button type="button" onClick={() => setShowViewModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-gray-700 p-1.5 rounded-full">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-900/50 flex justify-center items-center overflow-auto" style={{ maxHeight: '80vh' }}>
-                  {viewingFileUrl && (
-                    viewingFileUrl.toLowerCase().endsWith('.pdf') ? (
-                      <iframe src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded" title="Reference PDF" />
-                    ) : (
-                      <img src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded shadow-sm" />
-                    )
-                  )}
-                </div>
+              <div className="pt-4 flex flex-col md:flex-row-reverse gap-3">
+                <button type="submit" disabled={uploading} className="w-full md:w-auto btn-primary flex-1">
+                  {uploading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <UploadCloud className="w-5 h-5 mr-2" />}
+                  {uploading ? 'Mengunggah...' : 'Upload'}
+                </button>
+                <button type="button" onClick={() => setShowUploadModal(false)} className="w-full md:w-auto px-6 py-3 bg-[var(--bg-color)] border border-[var(--border-color)] hover:border-[var(--text-secondary)] text-[var(--text-primary)] font-semibold rounded-full transition-colors flex-1">
+                  Batal
+                </button>
               </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showViewModal && viewingFileUrl && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in" onClick={() => setShowViewModal(false)}></div>
+          <div className="relative w-full max-w-4xl bg-[var(--bg-card)] rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95">
+            <div className="px-6 py-4 flex justify-between items-center border-b border-[var(--border-color)]">
+              <h3 className="text-xl font-extrabold text-[var(--text-primary)]">Referensi {selectedWeek}</h3>
+              <button type="button" onClick={() => setShowViewModal(false)} className="text-[var(--text-secondary)] hover:bg-[var(--bg-color)] p-2 rounded-full transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 bg-[var(--bg-color)] flex justify-center items-center overflow-auto" style={{ maxHeight: '80vh' }}>
+              {viewingFileUrl && (
+                viewingFileUrl.toLowerCase().endsWith('.pdf') ? (
+                  <iframe src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded-xl" title="Reference PDF" />
+                ) : (
+                  <img src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded-xl shadow-sm" />
+                )
+              )}
             </div>
           </div>
-        )}
-      
+        </div>
+      )}
     </div>
   );
 }

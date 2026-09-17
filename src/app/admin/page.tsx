@@ -186,25 +186,33 @@ export default async function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-        <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-        <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-primary-600"></div>
-        
+    <div className="space-y-6 pb-12 animate-fade-up">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">Dashboard & Analytics</h1>
-          <p className="mt-2 text-zinc-600 dark:text-zinc-400 text-xs font-mono uppercase tracking-wider">
-            WELCOME_BACK // {session?.user?.name}
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-1 text-[var(--text-primary)]">Dashboard & Analytics</h1>
+          <p className="text-sm text-[var(--text-secondary)]">
+            Welcome back, <span className="font-bold">{session?.user?.name}</span>
           </p>
         </div>
-        <div className="mt-4 md:mt-0 flex gap-4">
-          <div className="text-center bg-zinc-100 dark:bg-zinc-950 px-6 py-3 rounded-sm border-2 border-zinc-200 dark:border-zinc-800">
-             <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">TOTAL USERS</p>
-             <p className="text-2xl font-black text-zinc-900 dark:text-zinc-100">{totalUsers}</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="stat-card">
+          <div>
+            <p className="text-sm font-bold text-[var(--text-secondary)] mb-1 uppercase tracking-wider">Total Users</p>
+            <p className="text-3xl font-black text-[var(--text-primary)]">{totalUsers}</p>
           </div>
-          <div className="text-center bg-zinc-100 dark:bg-zinc-950 px-6 py-3 rounded-sm border-2 border-zinc-200 dark:border-zinc-800">
-             <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">TOTAL RECORDS</p>
-             <p className="text-2xl font-black text-primary-600">{totalRecords}</p>
+          <div className="stat-icon-box bg-primary-gradient shadow-[0_8px_16px_rgba(181,32,37,0.3)] text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div>
+            <p className="text-sm font-bold text-[var(--text-secondary)] mb-1 uppercase tracking-wider">Total Records</p>
+            <p className="text-3xl font-black text-[var(--text-primary)]">{totalRecords}</p>
+          </div>
+          <div className="stat-icon-box bg-warning-gradient shadow-[0_8px_16px_rgba(245,158,11,0.3)] text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           </div>
         </div>
       </div>
@@ -212,32 +220,34 @@ export default async function AdminDashboard() {
       {/* Analytics Charts */}
       <DashboardCharts data={dashboardData} />
 
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-        <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
+      <div className="glass-card p-6 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-[var(--primary-500)]"></div>
         <div className="mb-6">
-          <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">Data Export Module</h3>
-          <div className="h-1 w-12 bg-primary-600 mt-2"></div>
+          <h3 className="text-xl font-extrabold text-[var(--text-primary)]">Data Export Module</h3>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">Unduh rekap laporan dalam format Excel atau PowerPoint</p>
         </div>
         
-        <form action="/fcmm/api/export" method="GET" className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-4">
-          <div className="flex gap-4">
-            <select name="month" className="flex-1 px-4 py-3 border-2 rounded-sm bg-zinc-50 text-zinc-900 border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-primary-500 transition-colors font-mono text-sm" defaultValue={currentMonth}>
+        <form action="/fcmm/api/export" method="GET" className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 flex flex-col sm:flex-row gap-4">
+            <select name="month" className="form-control w-full" defaultValue={currentMonth}>
               {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                <option key={m} value={m}>M{String(m).padStart(2, '0')}</option>
+                <option key={m} value={m}>Bulan {m}</option>
               ))}
             </select>
-            <select name="year" className="flex-1 px-4 py-3 border-2 rounded-sm bg-zinc-50 text-zinc-900 border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800 dark:text-zinc-100 focus:outline-none focus:border-primary-500 transition-colors font-mono text-sm" defaultValue={currentYear}>
+            <select name="year" className="form-control w-full" defaultValue={currentYear}>
               {[2025, 2026, 2027].map(y => (
                 <option key={y} value={y}>{y}</option>
               ))}
             </select>
           </div>
-          <div className="flex flex-col md:flex-row gap-4">
-            <button type="submit" className="w-full md:w-auto px-6 py-3 border-2 border-green-600 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-sm transition-colors uppercase tracking-widest text-center">
-              GENERATE EXCEL
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button type="submit" className="btn-primary !bg-[#10b981] hover:!bg-[#059669] !shadow-[0_4px_14px_rgba(16,185,129,0.3)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M14.5 12 12 14.5l-2.5-2.5"/><path d="M12 14.5v-7"/><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/></svg>
+              Generate Excel
             </button>
-            <button type="submit" formAction="/fcmm/api/export-pptx" className="w-full md:w-auto px-6 py-3 border-2 border-orange-600 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-sm transition-colors uppercase tracking-widest text-center">
-              GENERATE PPTX
+            <button type="submit" formAction="/fcmm/api/export-pptx" className="btn-primary !bg-[#f59e0b] hover:!bg-[#d97706] !shadow-[0_4px_14px_rgba(245,158,11,0.3)]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="m9 18 3-3-3-3"/></svg>
+              Generate PPTX
             </button>
           </div>
         </form>

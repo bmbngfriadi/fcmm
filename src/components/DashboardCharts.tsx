@@ -33,7 +33,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
 
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return <div className="h-[400px] w-full bg-zinc-100 dark:bg-zinc-900 animate-pulse rounded-sm border-2 border-zinc-200 dark:border-zinc-800"></div>;
+  if (!mounted) return <div className="h-[400px] w-full glass-card animate-pulse"></div>;
 
   const textColor = theme === 'dark' ? '#71717a' : '#71717a';
   const gridColor = theme === 'dark' ? '#27272a' : '#e4e4e7';
@@ -47,9 +47,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
     <div className="space-y-6">
       {/* Top Row: Monthly and Weekly */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Total Usage Per Month (Current Year)</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Total Usage Per Month (Current Year)</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.monthlyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -69,9 +68,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Usage Per Week (Current Month)</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Usage Per Week (Current Month)</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.weeklyData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -93,9 +91,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
 
       {/* Middle Row: YTD and MTD */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Year-To-Date (YTD) Cumulative</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Year-To-Date (YTD) Cumulative</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.ytdData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -119,9 +116,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Month-To-Date (MTD) Cumulative</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Month-To-Date (MTD) Cumulative</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.mtdData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -148,9 +144,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
 
       {/* Third Row: Pies */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">BW vs Color (All Time)</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">BW vs Color (All Time)</h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -178,9 +173,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Print vs Copy (All Time)</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Print vs Copy (All Time)</h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -211,9 +205,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
 
       {/* Fourth Row: Users and Departments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Top 5 Users (This Year)</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Top 5 Users (This Year)</h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.topUsers} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
@@ -234,9 +227,8 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-4 text-center">Avg Daily Usage Per Dept. (This Month)</h3>
+        <div className="glass-card p-6 relative">
+          <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-4 text-center">Avg Daily Usage Per Dept. (This Month)</h3>
           <div className="h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.dailyAverages} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
@@ -259,10 +251,9 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
       </div>
 
       {/* Fifth Row: Estimated Cost */}
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-sm border-2 border-zinc-200 dark:border-zinc-800 relative">
-        <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-        <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest mb-2">Estimated Monthly Cost (Rp)</h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 text-xs font-mono uppercase tracking-wider mb-6">BW (Rp 100/lembar, mulai dari lembar ke-2001) & Color (Rp 2.000/lembar dari lembar ke-1)</p>
+      <div className="glass-card p-6 relative">
+        <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest mb-2">Estimated Monthly Cost (Rp)</h3>
+        <p className="text-sm text-[var(--text-secondary)] font-medium mb-6">BW (Rp 100/lembar, mulai dari lembar ke-2001) & Color (Rp 2.000/lembar dari lembar ke-1)</p>
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.costData} margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>

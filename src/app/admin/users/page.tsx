@@ -15,7 +15,6 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
-  // Handle ESC key to close modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && showModal) {
@@ -58,23 +57,23 @@ export default function UsersPage() {
     if (res.ok) {
       setShowModal(false);
       fetchUsers();
-      showAlert({ title: "Success", message: isEditing ? "User updated successfully" : "User created successfully", type: "success" });
+      showAlert({ title: "Berhasil", message: isEditing ? "Pengguna berhasil diperbarui." : "Pengguna berhasil ditambahkan.", type: "success" });
     } else {
-      showAlert({ title: "Error", message: "Failed to save user", type: "error" });
+      showAlert({ title: "Gagal", message: "Terjadi kesalahan saat menyimpan pengguna.", type: "error" });
     }
   };
 
   const handleDelete = async (id: string) => {
     showConfirm({
-      title: "Delete User",
-      message: "Are you sure you want to delete this user? This action cannot be undone.",
+      title: "Hapus Pengguna",
+      message: "Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.",
       type: "error",
-      confirmText: "Delete",
+      confirmText: "Hapus",
       onConfirm: async () => {
         const res = await fetch(`/fcmm/api/users/${id}`, { method: "DELETE" });
         if (res.ok) {
           fetchUsers();
-          showAlert({ title: "Deleted", message: "User has been deleted.", type: "success" });
+          showAlert({ title: "Dihapus", message: "Pengguna telah berhasil dihapus.", type: "success" });
         }
       }
     });
@@ -82,150 +81,119 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-zinc-900 p-6 border-2 border-zinc-200 dark:border-zinc-800 rounded-sm relative gap-4">
+      <div className="page-header">
         <div>
-          <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-600"></div>
-          <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">User Management</h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-mono uppercase tracking-wider">Manage system users and their roles</p>
+          <h1>Manajemen Pengguna</h1>
+          <p>Kelola data dan peran pengguna sistem</p>
         </div>
         <button
-          onClick={() => {
-            setFormData({ id: "", name: "", username: "", email: "", password: "", role: "USER" });
-            setIsEditing(false);
-            setShowModal(true);
-          }}
-          className="w-full md:w-auto flex justify-center items-center px-5 py-2.5 bg-primary-600 text-white font-bold rounded-sm border-2 border-primary-600 hover:bg-primary-700 hover:border-primary-700 transition-colors uppercase tracking-widest text-xs"
+          onClick={() => handleOpenModal()}
+          className="btn-primary w-full md:w-auto"
         >
-          <Plus className="w-5 h-5 mr-2" />
-          Add User
+          <Plus className="w-5 h-5" />
+          Tambah Pengguna
         </button>
       </div>
 
-      <div 
-        className="bg-transparent md:bg-white md:dark:bg-zinc-900 md:rounded-sm md:border-2 md:border-zinc-200 dark:border-zinc-800 relative md:overflow-x-auto"
-      >
-        {/* Desktop Table View */}
-        <table className="hidden md:table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-zinc-100 dark:bg-zinc-950">
+      <div className="data-table-container">
+        <table className="data-table">
+          <thead>
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-bold text-zinc-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-zinc-500 uppercase tracking-wider">Username</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-zinc-500 uppercase tracking-wider">Email</th>
-              <th className="px-6 py-4 text-left text-xs font-bold text-zinc-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-4 text-right text-xs font-bold text-zinc-500 uppercase tracking-wider">Actions</th>
+              <th>Nama Pengguna</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th className="text-right">Aksi</th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-zinc-900 dark:text-zinc-100">{user.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">{user.username}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-400">{user.email || "-"}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'}`}>
+              <tr key={user.id}>
+                <td data-label="Nama Pengguna">
+                  <span className="font-semibold">{user.name}</span>
+                </td>
+                <td data-label="Username">
+                  <span className="text-[var(--text-secondary)]">@{user.username}</span>
+                </td>
+                <td data-label="Email">
+                  <span className="text-[var(--text-secondary)]">{user.email || "-"}</span>
+                </td>
+                <td data-label="Role">
+                  <span className={`px-3 py-1 inline-flex text-xs font-bold rounded-full ${user.role === 'ADMIN' ? 'bg-[var(--primary-500)]/10 text-[var(--primary-500)]' : 'bg-[var(--success-500)]/10 text-[var(--success-500)]'}`}>
                     {user.role}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button onClick={() => handleOpenModal(user)} className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300 mr-4 transition-colors">
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => handleDelete(user.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">
-                    <Trash2 className="w-5 h-5 inline" />
-                  </button>
+                <td data-label="Aksi" className="md:text-right">
+                  <div className="flex items-center md:justify-end gap-3 mt-2 md:mt-0">
+                    <button onClick={() => handleOpenModal(user)} className="flex items-center px-4 md:px-0 py-2 md:py-0 text-[var(--primary-500)] hover:text-[var(--primary-600)] bg-[var(--bg-color)] md:bg-transparent rounded-lg text-sm font-semibold transition-colors">
+                      <Edit className="w-4 h-4 md:mr-0 mr-2" />
+                      <span className="md:hidden">Edit</span>
+                    </button>
+                    <button onClick={() => handleDelete(user.id)} className="flex items-center px-4 md:px-0 py-2 md:py-0 text-[var(--danger-500)] hover:text-[var(--danger-600)] bg-[var(--bg-color)] md:bg-transparent rounded-lg text-sm font-semibold transition-colors">
+                      <Trash2 className="w-4 h-4 md:mr-0 mr-2" />
+                      <span className="md:hidden">Hapus</span>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {/* Mobile Card View */}
-        <div className="grid grid-cols-1 gap-4 md:hidden">
-          {users.map((user) => (
-            <div key={user.id} className="bg-white dark:bg-zinc-900 rounded-sm p-5 border-2 border-zinc-200 dark:border-zinc-800 relative">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">{user.name}</h3>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">@{user.username}</p>
-                  {user.email && <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">{user.email}</p>}
-                </div>
-                <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300' : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'}`}>
-                  {user.role}
-                </span>
-              </div>
-              <div className="flex justify-end gap-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-                <button onClick={() => handleOpenModal(user)} className="flex items-center px-4 py-2 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg text-sm font-semibold transition-colors">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(user.id)} className="flex items-center px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg text-sm font-semibold transition-colors">
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      
-        {showModal && (
-          <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              <div className="fixed inset-0 bg-zinc-900/80 animate-in fade-in duration-200" onClick={() => setShowModal(false)}></div>
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-              <div className="relative z-10 inline-block align-bottom bg-white dark:bg-zinc-900 rounded-sm text-left overflow-hidden shadow-md transform transition-all border-2 border-zinc-200 dark:border-zinc-800 animate-in zoom-in-95 duration-200 sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-zinc-200 dark:border-zinc-800">
-                <form onSubmit={handleSubmit}>
-                  <div className="px-6 pt-6 pb-4">
-                    <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-lg font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest" id="modal-title">
-                        {isEditing ? "Edit User" : "Add User"}
-                      </h3>
-                      <button type="button" onClick={() => setShowModal(false)} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-full">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="space-y-5">
-                      <div>
-                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Name</label>
-                        <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Username</label>
-                        <input type="text" required value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Email (Optional)</label>
-                        <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Password <span className="text-gray-400 font-normal">{isEditing && "(Leave blank to keep current)"}</span></label>
-                        <input type="password" required={!isEditing} value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Role</label>
-                        <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} className="block w-full px-4 py-2.5 border border-2 border-zinc-200 dark:border-zinc-800 rounded-sm focus:outline-none focus:border-primary-500 sm:text-sm bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors uppercase font-mono tracking-wider">
-                          <option value="USER">User</option>
-                          <option value="LEADER">Leader</option>
-                          <option value="ADMIN">Admin</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-zinc-100 dark:bg-zinc-950 px-6 py-4 flex flex-col md:flex-row-reverse gap-3 border-t border-zinc-200 dark:border-zinc-800">
-                    <button type="submit" className="w-full md:w-auto inline-flex justify-center rounded-xl border border-2 border-primary-600 px-6 py-2.5 bg-primary-600 text-xs uppercase tracking-widest font-black text-white hover:bg-primary-700 hover:border-primary-700 focus:outline-none transition-colors">
-                      {isEditing ? 'Save Changes' : 'Create User'}
-                    </button>
-                    <button type="button" onClick={() => setShowModal(false)} className="w-full md:w-auto inline-flex justify-center rounded-xl border border-2 border-zinc-200 dark:border-zinc-800 px-6 py-2.5 bg-white dark:bg-zinc-900 text-xs uppercase tracking-widest font-black text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none transition-colors">
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
+      {showModal && (
+        <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center md:p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in" onClick={() => setShowModal(false)}></div>
+          <div className="relative w-full md:max-w-md bg-[var(--bg-card)] rounded-t-[32px] md:rounded-3xl p-6 md:p-8 animate-slide-up-sheet md:animate-in md:zoom-in-95 shadow-2xl">
+            <div className="w-12 h-1.5 bg-[var(--border-color)] rounded-full mx-auto mb-6 md:hidden"></div>
+            
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-extrabold text-[var(--text-primary)]">
+                {isEditing ? "Edit Pengguna" : "Tambah Pengguna"}
+              </h3>
+              <button type="button" onClick={() => setShowModal(false)} className="text-[var(--text-secondary)] hover:bg-[var(--bg-color)] p-2 rounded-full transition-colors hidden md:block">
+                <X className="w-5 h-5" />
+              </button>
             </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="form-control" />
+              </div>
+              <div className="form-group">
+                <label>Username</label>
+                <input type="text" required value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} className="form-control" />
+              </div>
+              <div className="form-group">
+                <label>Email (Opsional)</label>
+                <input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="form-control" />
+              </div>
+              <div className="form-group">
+                <label>Password {isEditing && <span className="text-[10px] font-normal italic">(Kosongkan jika tidak diubah)</span>}</label>
+                <input type="password" required={!isEditing} value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="form-control" />
+              </div>
+              <div className="form-group">
+                <label>Peran (Role)</label>
+                <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} className="form-control">
+                  <option value="USER">User</option>
+                  <option value="LEADER">Leader</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </div>
+              
+              <div className="pt-4 flex flex-col md:flex-row-reverse gap-3">
+                <button type="submit" className="w-full md:w-auto btn-primary flex-1">
+                  {isEditing ? 'Simpan Perubahan' : 'Buat Pengguna'}
+                </button>
+                <button type="button" onClick={() => setShowModal(false)} className="w-full md:w-auto px-6 py-3 bg-[var(--bg-color)] border border-[var(--border-color)] hover:border-[var(--text-secondary)] text-[var(--text-primary)] font-semibold rounded-full transition-colors flex-1">
+                  Batal
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-      
+        </div>
+      )}
     </div>
   );
 }
