@@ -1,0 +1,22 @@
+{
+  "name": "Sistem Monitoring Fotokopi Cemindo",
+  "short_name": "FCMM",
+  "description": "Aplikasi Pemantauan Penggunaan Mesin Fotokopi",
+  "start_url": "/fcmm/login",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#b52025",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/fcmm/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/fcmm/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

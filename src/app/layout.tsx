@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { AlertProvider } from "@/components/AlertProvider";
@@ -10,11 +10,28 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#b52025",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "FCMM System",
   description: "FCMM System Dashboard",
+  manifest: "/fcmm/manifest.json",
   icons: {
     icon: '/fcmm/logo.png',
+    apple: '/fcmm/pwa-icon-192.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "FCMM System",
+  },
+  formatDetection: {
+    telephone: false,
   },
 };
 
