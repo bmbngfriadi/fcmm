@@ -11,7 +11,6 @@ export default withPWA({
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
-  swcMinify: true,
   disable: false, // always generate SW, even in dev, just to test (but can be disabled if needed)
   workboxOptions: {
     disableDevLogs: true,
