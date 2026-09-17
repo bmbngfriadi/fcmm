@@ -10,13 +10,14 @@ export default async function AdminDashboard() {
   const totalUsers = await prisma.user.count();
   const totalRecords = await prisma.record.count();
 
-  // Fetch all records for aggregation
-  const records = await prisma.record.findMany({
-    include: { user: true }
-  });
-
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
+
+  // Fetch only current year records for aggregation to prevent OOM on VPS
+  const records = await prisma.record.findMany({
+    where: { year: currentYear },
+    include: { user: true }
+  });
 
   // Helper to calculate total usage for a record
   const calculateUsage = (r: any) => {
