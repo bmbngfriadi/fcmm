@@ -46,12 +46,12 @@
   }
 
   :root.dark {
-    --bg-color: #0f172a;
-    --bg-card: #1e293b;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border-color: #334155;
-    --surface: #1e293b;
+    --bg-color: #000000;
+    --bg-card: #0a0a0a;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-color: #27272a;
+    --surface: #0a0a0a;
   }
 }
 
@@ -137,6 +137,9 @@ body {
 }
 
 @media (max-width: 768px) {
+  .data-table-container {
+    @apply border-0 shadow-none bg-transparent;
+  }
   .data-table thead {
     display: none;
   }
@@ -145,7 +148,7 @@ body {
     width: 100%;
   }
   .data-table tr {
-    @apply m-4 border border-[var(--border-color)] rounded-xl bg-[var(--bg-card)] overflow-hidden;
+    @apply mb-4 border border-[var(--border-color)] rounded-xl bg-[var(--bg-card)] overflow-hidden;
   }
   .data-table td {
     @apply flex flex-col p-3 border-b border-[var(--border-color)];
