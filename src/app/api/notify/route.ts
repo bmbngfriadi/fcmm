@@ -117,75 +117,95 @@ export async function POST(req: Request) {
         <head>
           <meta charset="utf-8">
         </head>
-        <body style="margin: 0; padding: 40px 20px; background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden;">
-            
-            <!-- Header -->
-            <div style="background-color: #b52025; padding: 30px 20px; text-align: center; color: #ffffff;">
-              <h1 style="margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 0.5px;">FCMM System</h1>
-              <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Monthly Operational Report Summary</p>
-            </div>
+        <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <center style="width: 100%; background-color: #f8fafc;">
+            <!-- Outlook-safe max-width centering -->
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="width: 600px; max-width: 600px; margin: 0 auto; background-color: #ffffff; margin-top: 40px; margin-bottom: 40px; border: 1px solid #e2e8f0;">
+              <tr>
+                <td style="padding: 0;">
+                  
+                  <!-- Header -->
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                      <td align="center" style="background-color: #b52025; padding: 30px 20px; color: #ffffff;">
+                        <h1 style="margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 0.5px;">FCMM System</h1>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Monthly Operational Report Summary</p>
+                      </td>
+                    </tr>
+                  </table>
 
-            <!-- Body -->
-            <div style="padding: 30px;">
-              <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-top: 0;">Halo <strong>${manager.name}</strong>,</p>
-              <p style="color: #475569; font-size: 15px; line-height: 1.6;">Laporan operasional bulanan FCMM telah berhasil digenerate oleh sistem. Laporan lengkap (PPTX) telah dilampirkan pada email ini. Berikut adalah rincian summary penggunaan mesin:</p>
-              
-              <!-- Grid Summary -->
-              <table width="100%" cellpadding="15" cellspacing="0" style="margin: 25px 0; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-                <tr>
-                  <td width="50%" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-                    <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Periode</p>
-                    <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${monthsName[month-1]} ${year}</p>
-                  </td>
-                  <td width="50%" style="border-bottom: 1px solid #e2e8f0;">
-                    <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Highest Usage</p>
-                    <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #b52025;">${topUser?.name || '-'}</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td width="50%" style="border-right: 1px solid #e2e8f0;">
-                    <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Total BW</p>
-                    <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${totalBW.toLocaleString()} pages</p>
-                  </td>
-                  <td width="50%">
-                    <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Total Color</p>
-                    <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${totalColor.toLocaleString()} pages</p>
-                  </td>
-                </tr>
-              </table>
+                  <!-- Body -->
+                  <table border="0" cellpadding="30" cellspacing="0" width="100%">
+                    <tr>
+                      <td>
+                        <p style="color: #475569; font-size: 15px; line-height: 1.6; margin-top: 0;">Halo <strong>${manager.name}</strong>,</p>
+                        <p style="color: #475569; font-size: 15px; line-height: 1.6;">Laporan operasional bulanan FCMM telah berhasil digenerate oleh sistem. Laporan lengkap (PPTX) telah dilampirkan pada email ini. Berikut adalah rincian summary penggunaan mesin:</p>
+                        
+                        <!-- Grid Summary -->
+                        <table width="100%" cellpadding="15" cellspacing="0" style="margin: 25px 0; background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                          <tr>
+                            <td width="50%" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Periode</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${monthsName[month-1]} ${year}</p>
+                            </td>
+                            <td width="50%" style="border-bottom: 1px solid #e2e8f0;">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Highest Usage</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #b52025;">${topUser?.name || '-'}</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="50%" style="border-right: 1px solid #e2e8f0;">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Total BW</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${totalBW.toLocaleString()} pages</p>
+                            </td>
+                            <td width="50%">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Total Color</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${totalColor.toLocaleString()} pages</p>
+                            </td>
+                          </tr>
+                        </table>
 
-              <!-- List section -->
-              <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Ringkasan Kategori</h3>
-              
-              <table width="100%" cellpadding="12" cellspacing="0">
-                <tr>
-                  <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Print Usage</td>
-                  <td align="right" style="border-bottom: 1px solid #f1f5f9;">
-                    <span style="background-color: #ecfdf5; color: #10b981; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold;">${totalPrint.toLocaleString()} pages</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Copy Usage</td>
-                  <td align="right" style="border-bottom: 1px solid #f1f5f9;">
-                    <span style="background-color: #ecfdf5; color: #10b981; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold;">${totalCopy.toLocaleString()} pages</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Total Keseluruhan</td>
-                  <td align="right" style="border-bottom: 1px solid #f1f5f9;">
-                    <span style="background-color: #fef2f2; color: #ef4444; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold;">${(totalBW + totalColor).toLocaleString()} pages</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
+                        <!-- List section -->
+                        <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Ringkasan Kategori</h3>
+                        
+                        <table width="100%" cellpadding="12" cellspacing="0">
+                          <tr>
+                            <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Print Usage</td>
+                            <td align="right" style="border-bottom: 1px solid #f1f5f9;">
+                              <span style="background-color: #ecfdf5; color: #10b981; padding: 4px 10px; font-size: 12px; font-weight: bold;">${totalPrint.toLocaleString()} pages</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Copy Usage</td>
+                            <td align="right" style="border-bottom: 1px solid #f1f5f9;">
+                              <span style="background-color: #ecfdf5; color: #10b981; padding: 4px 10px; font-size: 12px; font-weight: bold;">${totalCopy.toLocaleString()} pages</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 14px;">Total Keseluruhan</td>
+                            <td align="right" style="border-bottom: 1px solid #f1f5f9;">
+                              <span style="background-color: #fef2f2; color: #ef4444; padding: 4px 10px; font-size: 12px; font-weight: bold;">${(totalBW + totalColor).toLocaleString()} pages</span>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
 
-            <!-- Footer -->
-            <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
-              <p style="margin: 0; font-size: 12px; color: #94a3b8;">Sistem Notifikasi Otomatis &bull; FCMM System</p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; color: #94a3b8;">&copy; ${year} FCMM. All rights reserved.</p>
-            </div>
-          </div>
+                  <!-- Footer -->
+                  <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                    <tr>
+                      <td align="center" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
+                        <p style="margin: 0; font-size: 12px; color: #94a3b8;">Sistem Notifikasi Otomatis &bull; FCMM System</p>
+                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #94a3b8;">&copy; ${year} FCMM. All rights reserved.</p>
+                      </td>
+                    </tr>
+                  </table>
+
+                </td>
+              </tr>
+            </table>
+          </center>
         </body>
         </html>
       `;
