@@ -450,7 +450,7 @@ export default function DataEntryPage() {
                           <div className="flex items-center justify-center gap-2">
                             <span>{wLabel}</span>
                             {!isReadOnly && <button onClick={() => { setSelectedWeek(wKey); setShowUploadModal(true); }} className="hover:text-[var(--primary-600)] transition-colors" title={`Upload ${wKey} Reference`}><UploadCloud size={14}/></button>}
-                            {referenceFiles[wKey] && <button onClick={() => { setViewingFileUrl(referenceFiles[wKey]); setShowViewModal(true); }} className="text-[var(--primary-500)] hover:text-[var(--primary-700)] transition-colors" title={`View ${wKey} Reference`}><FileText size={14}/></button>}
+                            {referenceFiles[wKey] && <button onClick={() => { setSelectedWeek(wKey); setViewingFileUrl(referenceFiles[wKey]); setShowViewModal(true); }} className="text-[var(--primary-500)] hover:text-[var(--primary-700)] transition-colors" title={`View ${wKey} Reference`}><FileText size={14}/></button>}
                           </div>
                         </th>
                         {index > 0 && <th colSpan={2} className="px-3 py-2 text-center font-bold border-b border-[var(--border-color)] bg-[var(--bg-color)]">Total {wKey}</th>}
