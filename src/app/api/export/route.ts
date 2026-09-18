@@ -102,13 +102,19 @@ export async function GET(req: Request) {
 
     const buf = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
 
-    return new NextResponse(buf, {
+    const response = new NextResponse(buf, {
       status: 200,
       headers: {
         "Content-Disposition": `attachment; filename="FCMM_Report_${year}_${month}.xlsx"`,
         "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       },
     });
+    
+    // Explicitly free memory for low-RAM VPS
+    exportData.length = 0;
+    records.length = 0;
+
+    return response;
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to generate report" }, { status: 500 });

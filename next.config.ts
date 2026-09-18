@@ -4,6 +4,8 @@ import withPWA from "@ducanh2912/next-pwa";
 const nextConfig: NextConfig = {
   basePath: '/fcmm',
   turbopack: {},
+  output: 'standalone',
+  productionBrowserSourceMaps: false,
 };
 
 export default withPWA({

@@ -10,6 +10,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   const isAdmin = session?.user?.role === "ADMIN";
 
@@ -73,7 +74,7 @@ export function Sidebar() {
             </div>
           </div>
           <button
-            onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
+            onClick={() => setShowLogoutConfirm(true)}
             className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-bold text-[var(--danger-500)] bg-[var(--danger-500)]/5 hover:bg-[var(--danger-500)]/10 border border-[var(--danger-500)]/30 hover:border-[var(--danger-500)] rounded-xl transition-all duration-300 hover:shadow-[0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 group"
           >
             <LogOut className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -162,10 +163,43 @@ export function Sidebar() {
                 </div>
               </div>
               <button
-                onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
+                onClick={() => setShowLogoutConfirm(true)}
                 className="w-10 h-10 flex items-center justify-center text-[var(--danger-500)] bg-[var(--danger-500)]/5 border border-[var(--danger-500)]/30 rounded-full hover:bg-[var(--danger-500)]/10 hover:border-[var(--danger-500)] transition-all duration-300 hover:shadow-[0_4px_15px_rgba(239,68,68,0.2)] hover:-translate-y-0.5 group"
               >
                 <LogOut className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[60] flex flex-col justify-end md:justify-center p-0 md:p-4">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
+            onClick={() => setShowLogoutConfirm(false)}
+          />
+          <div className="relative bg-[var(--bg-card)] rounded-t-[32px] md:rounded-3xl p-6 md:p-8 shadow-2xl w-full md:max-w-[440px] mx-auto animate-slide-up-sheet border-t md:border border-[var(--border-color)]">
+            <div className="w-12 h-1.5 bg-[var(--border-color)] rounded-full mx-auto mb-6 md:hidden"></div>
+            <div className="w-14 h-14 rounded-full bg-[var(--danger-500)]/15 flex items-center justify-center mb-6 mx-auto">
+              <LogOut className="w-7 h-7 text-[var(--danger-500)]" />
+            </div>
+            <h3 className="text-2xl font-extrabold text-[var(--text-primary)] text-center mb-3 tracking-tight">Konfirmasi Keluar</h3>
+            <p className="text-[var(--text-secondary)] text-center mb-8 font-medium">
+              Apakah Anda yakin ingin keluar dari aplikasi? Anda harus masuk kembali untuk melanjutkan.
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 h-[48px] rounded-full font-bold text-[var(--text-primary)] bg-[var(--bg-color)] border border-[var(--border-color)] hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
+                className="flex-1 h-[48px] rounded-full font-bold text-white bg-[var(--danger-500)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_4px_14px_rgba(225,29,72,0.4)]"
+              >
+                Ya, Keluar
               </button>
             </div>
           </div>
