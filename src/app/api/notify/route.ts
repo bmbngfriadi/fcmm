@@ -272,8 +272,12 @@ export async function POST(req: Request) {
         </html>
       `;
 
+      // Ekstrak alamat email saja dari SMTP_FROM (misal: "Name <email@a.com>" -> "email@a.com")
+      const rawFrom = process.env.SMTP_FROM || process.env.SMTP_USER;
+      const fromEmail = rawFrom?.match(/<([^>]+)>/)?.[1] || rawFrom;
+
       await transporter.sendMail({
-        from: process.env.SMTP_FROM,
+        from: `"Photocopier Usage Monitoring System" <${fromEmail}>`,
         to: manager.email,
         subject: `[FCMM] Analytics & Global Usage Report - Month ${month}/${year}`,
         html: emailHtml,
