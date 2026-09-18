@@ -72,6 +72,8 @@ export async function POST(req: Request) {
     // Calculate Analytics
     let userTotals = allUsers.map(u => {
       let totalUsage = 0;
+      let printUsage = 0;
+      let copyUsage = 0;
       categories.forEach(cat => {
         const bw = records.find(r => r.userId === u.id && r.category === cat && r.colorMode === "BW");
         const col = records.find(r => r.userId === u.id && r.category === cat && r.colorMode === "COLOR");
@@ -83,16 +85,16 @@ export async function POST(req: Request) {
           const val = Number(bwUsage);
           totalUsage += val; 
           totalBW += val; 
-          if (cat === "PRINT") totalPrint += val; else totalCopy += val;
+          if (cat === "PRINT") { totalPrint += val; printUsage += val; } else { totalCopy += val; copyUsage += val; }
         }
         if (colUsage !== "-") { 
           const val = Number(colUsage);
           totalUsage += val; 
           totalColor += val;
-          if (cat === "PRINT") totalPrint += val; else totalCopy += val;
+          if (cat === "PRINT") { totalPrint += val; printUsage += val; } else { totalCopy += val; copyUsage += val; }
         }
       });
-      return { ...u, totalUsage };
+      return { ...u, totalUsage, printUsage, copyUsage };
     });
 
     userTotals.sort((a, b) => b.totalUsage - a.totalUsage);
@@ -100,6 +102,28 @@ export async function POST(req: Request) {
     const maxUsage = userTotals.length > 0 ? userTotals[0].totalUsage : 0;
     const topUser = userTotals.length > 0 ? userTotals[0] : null;
     const bottomUser = userTotals.length > 0 ? userTotals[userTotals.length - 1] : null;
+
+    const activeUsersCount = userTotals.length;
+    const overallTotal = totalBW + totalColor;
+    const colorRatio = overallTotal > 0 ? ((totalColor / overallTotal) * 100).toFixed(1) : '0';
+    const bwRatio = overallTotal > 0 ? ((totalBW / overallTotal) * 100).toFixed(1) : '0';
+
+    const top3Html = userTotals.slice(0, 3).map((u, i) => `
+      <tr>
+        <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 13px; padding: 6px 0;">${i+1}. ${u.name}</td>
+        <td align="right" style="border-bottom: 1px solid #f1f5f9; padding: 6px 0;">
+          <span style="color: #0f172a; font-size: 12px; font-weight: bold;">${u.totalUsage.toLocaleString()}</span>
+        </td>
+      </tr>
+    `).join('');
+
+    const detailUsersHtml = userTotals.slice(0, 5).map(u => `
+      <tr>
+        <td style="border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 13px; padding: 8px 0;">${u.name}</td>
+        <td align="right" style="border-bottom: 1px solid #f1f5f9; color: #64748b; font-size: 12px; padding: 8px 0;">${u.printUsage.toLocaleString()}</td>
+        <td align="right" style="border-bottom: 1px solid #f1f5f9; color: #64748b; font-size: 12px; padding: 8px 0;">${u.copyUsage.toLocaleString()}</td>
+      </tr>
+    `).join('');
 
     let sentCount = 0;
 
@@ -187,6 +211,44 @@ export async function POST(req: Request) {
                               <span style="background-color: #fef2f2; color: #ef4444; padding: 4px 10px; font-size: 12px; font-weight: bold;">${(totalBW + totalColor).toLocaleString()} pages</span>
                             </td>
                           </tr>
+                        </table>
+
+                        <!-- Additional Insight Summary -->
+                        <table width="100%" cellpadding="15" cellspacing="0" style="margin: 25px 0; background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                          <tr>
+                            <td width="50%" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;" valign="top">
+                              <p style="margin: 0 0 10px 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Top 3 Highest Users</p>
+                              <table width="100%" cellpadding="0" cellspacing="0">
+                                ${top3Html}
+                              </table>
+                            </td>
+                            <td width="50%" style="border-bottom: 1px solid #e2e8f0;" valign="top">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Lowest Usage</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #10b981;">${bottomUser?.name || '-'}</p>
+                              <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748b;">${bottomUser?.totalUsage.toLocaleString() || '0'} pages</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="50%" style="border-right: 1px solid #e2e8f0;" valign="top">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Color vs BW Ratio</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${colorRatio}% Color / ${bwRatio}% BW</p>
+                            </td>
+                            <td width="50%" valign="top">
+                              <p style="margin: 0; font-size: 11px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Active Depts / Users</p>
+                              <p style="margin: 4px 0 0 0; font-size: 15px; font-weight: bold; color: #0f172a;">${activeUsersCount} Users</p>
+                            </td>
+                          </tr>
+                        </table>
+
+                        <!-- Detail Category Section -->
+                        <h3 style="font-size: 16px; color: #0f172a; margin-top: 25px; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Detail Print vs Copy (Top 5)</h3>
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="border-bottom: 2px solid #e2e8f0; color: #0f172a; font-size: 12px; font-weight: bold; padding: 8px 0;">User</td>
+                            <td align="right" style="border-bottom: 2px solid #e2e8f0; color: #0f172a; font-size: 12px; font-weight: bold; padding: 8px 0;">Print</td>
+                            <td align="right" style="border-bottom: 2px solid #e2e8f0; color: #0f172a; font-size: 12px; font-weight: bold; padding: 8px 0;">Copy</td>
+                          </tr>
+                          ${detailUsersHtml}
                         </table>
                       </td>
                     </tr>
