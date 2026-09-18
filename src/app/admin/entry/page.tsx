@@ -642,13 +642,18 @@ export default function DataEntryPage() {
               </button>
             </div>
             <div className="p-4 bg-[var(--bg-color)] flex justify-center items-center overflow-auto" style={{ maxHeight: '80vh' }}>
-              {viewingFileUrl && (
-                viewingFileUrl.toLowerCase().endsWith('.pdf') ? (
-                  <iframe src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} className="w-full min-h-[60vh] border-0 rounded-xl" title="Reference PDF" />
-                ) : (
-                  <img src={viewingFileUrl.replace('/fcmm-system', '/fcmm').startsWith('/fcmm') ? viewingFileUrl.replace('/fcmm-system', '/fcmm') : `/fcmm${viewingFileUrl}`} alt="Reference" className="max-w-full h-auto rounded-xl shadow-sm" />
-                )
-              )}
+              {viewingFileUrl && (() => {
+                  let safeUrl = viewingFileUrl.replace('/fcmm-system', '/fcmm');
+                  // Legacy support: redirect static uploads to dynamic API uploads
+                  safeUrl = safeUrl.replace('/fcmm/uploads/', '/fcmm/api/uploads/').replace('/uploads/', '/fcmm/api/uploads/');
+                  const finalUrl = safeUrl.startsWith('/fcmm') ? safeUrl : `/fcmm${safeUrl}`;
+                  
+                  return finalUrl.toLowerCase().endsWith('.pdf') ? (
+                    <iframe src={finalUrl} className="w-full min-h-[60vh] border-0 rounded-xl" title="Reference PDF" />
+                  ) : (
+                    <img src={finalUrl} alt="Reference" className="max-w-full h-auto rounded-xl shadow-sm" />
+                  );
+              })()}
             </div>
           </div>
         </div>
