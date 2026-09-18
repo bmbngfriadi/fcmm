@@ -191,13 +191,13 @@ export function Sidebar() {
             <div className="flex gap-4">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 h-[48px] rounded-full font-bold text-[var(--text-primary)] bg-[var(--bg-color)] border border-[var(--border-color)] hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                className="btn-secondary flex-1"
               >
                 Batal
               </button>
               <button
                 onClick={() => signOut({ callbackUrl: '/fcmm/login' })}
-                className="flex-1 h-[48px] rounded-full font-bold text-white bg-[var(--danger-500)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_4px_14px_rgba(225,29,72,0.4)]"
+                className="btn-danger flex-1"
               >
                 Ya, Keluar
               </button>

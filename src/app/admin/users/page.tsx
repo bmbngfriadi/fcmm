@@ -186,7 +186,7 @@ export default function UsersPage() {
                 <button type="submit" className="w-full md:w-auto btn-primary flex-1">
                   {isEditing ? 'Simpan Perubahan' : 'Buat Pengguna'}
                 </button>
-                <button type="button" onClick={() => setShowModal(false)} className="w-full md:w-auto px-6 py-3 bg-[var(--bg-color)] border border-[var(--border-color)] hover:border-[var(--text-secondary)] text-[var(--text-primary)] font-semibold rounded-full transition-colors flex-1">
+                <button type="button" onClick={() => setShowModal(false)} className="w-full md:w-auto btn-secondary flex-1">
                   Batal
                 </button>
               </div>

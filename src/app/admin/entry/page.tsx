@@ -622,7 +622,7 @@ export default function DataEntryPage() {
                   {uploading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <UploadCloud className="w-5 h-5 mr-2" />}
                   {uploading ? 'Mengunggah...' : 'Upload'}
                 </button>
-                <button type="button" onClick={() => setShowUploadModal(false)} className="w-full md:w-auto px-6 py-3 bg-[var(--bg-color)] border border-[var(--border-color)] hover:border-[var(--text-secondary)] text-[var(--text-primary)] font-semibold rounded-full transition-colors flex-1">
+                <button type="button" onClick={() => setShowUploadModal(false)} className="w-full md:w-auto btn-secondary flex-1">
                   Batal
                 </button>
               </div>

@@ -242,11 +242,11 @@ export default async function AdminDashboard() {
             </select>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button type="submit" className="btn-primary !bg-[#10b981] hover:!bg-[#059669] !shadow-[0_4px_14px_rgba(16,185,129,0.3)]">
+            <button type="submit" className="btn-success">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M14.5 12 12 14.5l-2.5-2.5"/><path d="M12 14.5v-7"/><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/></svg>
               Generate Excel
             </button>
-            <button type="submit" formAction="/fcmm/api/export-pptx" className="btn-primary !bg-[#f59e0b] hover:!bg-[#d97706] !shadow-[0_4px_14px_rgba(245,158,11,0.3)]">
+            <button type="submit" formAction="/fcmm/api/export-pptx" className="btn-warning">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="m9 18 3-3-3-3"/></svg>
               Generate PPTX
             </button>
