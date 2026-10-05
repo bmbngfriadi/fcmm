@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # 1. Database Mandiri khusus FCMM System
+  db:
+    image: postgres:15-alpine
+    container_name: fcmm_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Gamaadmin53
+      POSTGRES_DB: fcmm_system
+    ports:
+      - "5434:5432" # Pakai port 5434 di luar agar tidak tabrakan
+    volumes:
+      - fcmm_pgdata:/var/lib/postgresql/data
+
+  # 2. Aplikasi FCMM (Next.js)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fcmm_app
+    restart: unless-stopped
+    ports:
+      - "5175:3000" # Web di port 5175
+    environment:
+      # Timpa koneksi database ke container fcmm_db
+      - DATABASE_URL=postgresql://postgres:Gamaadmin53@db:5432/fcmm_system?schema=public
+      - NEXTAUTH_URL=https://cg-plantbatam.com/fcmm
+      - NEXTAUTH_SECRET=fcmm_system_super_secret_key_2026
+      # SMTP tetap di-load dari variabel
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_USER=batam.cg@gmail.com
+      - SMTP_PASS=yasx ndpc cfas nwww
+      - SMTP_FROM=System Notification (FC Machine) <batam.cg@gmail.com>
+    depends_on:
+      - db
+
+volumes:
+  fcmm_pgdata:

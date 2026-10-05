@@ -87,6 +87,7 @@ export default function DataEntryPage() {
     if (!fileToUpload) return;
     
     setUploading(true);
+
     const formData = new FormData();
     formData.append("file", fileToUpload);
     formData.append("month", month.toString());
@@ -103,9 +104,9 @@ export default function DataEntryPage() {
       if (res.ok) {
         const data = await res.json();
         setReferenceFiles(prev => ({...prev, [selectedWeek]: data.fileUrl}));
+        showAlert({ title: "Berhasil", message: "File berhasil diunggah!", type: "success" });
         setShowUploadModal(false);
         setFileToUpload(null);
-        showAlert({ title: "Berhasil", message: "File berhasil diunggah!", type: "success" });
       } else {
         showAlert({ title: "Gagal", message: "Gagal mengunggah file.", type: "error" });
       }
