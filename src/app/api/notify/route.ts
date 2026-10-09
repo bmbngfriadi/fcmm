@@ -132,8 +132,8 @@ export async function POST(req: Request) {
     const monthsName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const filename = `FCMM_Report_${year}_${monthsName[month-1]}.pptx`;
 
-    for (const manager of recipients) {
-      if (!manager.email) continue;
+    const emailPromises = recipients.map(async (manager) => {
+      if (!manager.email) return null;
       
       const emailHtml = `
         <!DOCTYPE html>
@@ -289,8 +289,11 @@ export async function POST(req: Request) {
         ]
       });
 
-      sentCount++;
-    }
+      return manager.email;
+    });
+
+    const results = await Promise.all(emailPromises);
+    const sentCount = results.filter(Boolean).length;
 
     return NextResponse.json({ success: true, sentCount });
   } catch (error: any) {
