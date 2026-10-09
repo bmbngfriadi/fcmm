@@ -30,11 +30,11 @@ services:
       - NEXTAUTH_URL=${NEXTAUTH_URL:-https://cg-plantbatam.com/fcmm}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       # SMTP tetap di-load dari variabel
-      - SMTP_HOST=smtp.gmail.com
-      - SMTP_PORT=465
-      - SMTP_USER=batam.cg@gmail.com
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-465}
+      - SMTP_USER=${SMTP_USER:-batam.cg@gmail.com}
       - SMTP_PASS=${SMTP_PASS}
-      - SMTP_FROM=System Notification (FC Machine) <batam.cg@gmail.com>
+      - SMTP_FROM=${SMTP_FROM:-System Notification (FC Machine) <batam.cg@gmail.com>}
     depends_on:
       - db
 
