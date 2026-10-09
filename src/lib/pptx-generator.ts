@@ -271,10 +271,10 @@ export async function generatePPTXBuffer(currentMonth: number, currentYear: numb
   ]);
 
   slideSummary.addTable(tableRows, { 
-    x: 0.2, y: 1.8, w: 9.6, 
+    x: 0.2, y: 1.5, w: 9.6, 
     colW: [2.1, 1.2, 1.7, 3, 1.6],
     border: { pt: 1, color: "e2e8f0" },
-    fontSize: 13,
+    fontSize: 11,
     align: "center",
     valign: "middle"
   });
