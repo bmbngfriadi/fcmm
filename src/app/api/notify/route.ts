@@ -125,8 +125,6 @@ export async function POST(req: Request) {
       </tr>
     `).join('');
 
-    let sentCount = 0;
-
     // Generate PPTX
     const pptxBuffer = await generatePPTXBuffer(month, year);
     const monthsName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
