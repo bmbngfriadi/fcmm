@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { DashboardCharts } from "@/components/DashboardCharts";
+import { ExportModule } from "@/components/ExportModule";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -221,38 +222,8 @@ export default async function AdminDashboard() {
       {/* Analytics Charts */}
       <DashboardCharts data={dashboardData} />
 
-      <div className="glass-card p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-[var(--primary-500)]"></div>
-        <div className="mb-6">
-          <h3 className="text-xl font-extrabold text-[var(--text-primary)]">Data Export Module</h3>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">Unduh rekap laporan dalam format Excel atau PowerPoint</p>
-        </div>
-        
-        <form action="/fcmm/api/export" method="GET" className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1 flex flex-col sm:flex-row gap-4">
-            <select name="month" className="form-control w-full" defaultValue={currentMonth}>
-              {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                <option key={m} value={m}>Bulan {m}</option>
-              ))}
-            </select>
-            <select name="year" className="form-control w-full" defaultValue={currentYear}>
-              {[2025, 2026, 2027].map(y => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button type="submit" className="btn-success">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M14.5 12 12 14.5l-2.5-2.5"/><path d="M12 14.5v-7"/><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/></svg>
-              Generate Excel
-            </button>
-            <button type="submit" formAction="/fcmm/api/export-pptx" className="btn-warning">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="m9 18 3-3-3-3"/></svg>
-              Generate PPTX
-            </button>
-          </div>
-        </form>
-      </div>
+      {/* Export Module */}
+      <ExportModule currentMonth={currentMonth} currentYear={currentYear} />
     </div>
   );
 }

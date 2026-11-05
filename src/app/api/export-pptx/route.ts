@@ -11,8 +11,20 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const currentYear = parseInt(searchParams.get("year") || new Date().getFullYear().toString());
-  const currentMonth = parseInt(searchParams.get("month") || (new Date().getMonth() + 1).toString());
+  const startDateStr = searchParams.get("startDate");
+  let currentYear = parseInt(searchParams.get("year") || "");
+  let currentMonth = parseInt(searchParams.get("month") || "");
+
+  if ((!currentYear || isNaN(currentYear)) && startDateStr) {
+    const sParts = startDateStr.split("-").map(Number);
+    if (sParts.length >= 2 && !isNaN(sParts[0]) && !isNaN(sParts[1])) {
+      currentYear = sParts[0];
+      currentMonth = sParts[1];
+    }
+  }
+
+  if (!currentYear || isNaN(currentYear)) currentYear = new Date().getFullYear();
+  if (!currentMonth || isNaN(currentMonth)) currentMonth = new Date().getMonth() + 1;
 
   try {
     const pptxBuffer = await generatePPTXBuffer(currentMonth, currentYear);
