@@ -2,9 +2,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependensi
+# Install dependensi dengan retry & timeout lebih tinggi untuk koneksi lambat
 COPY package*.json ./
-RUN npm install
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-maxtimeout 300000 \
+    && npm install --fetch-timeout=300000
 
 # Copy seluruh source code
 COPY . .
