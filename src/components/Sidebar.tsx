@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Printer, BarChart3, Settings, LogOut, LayoutDashboard, MoreHorizontal } from "lucide-react";
+import { Users, Printer, BarChart3, Settings, LogOut, LayoutDashboard, MoreHorizontal, CalendarRange } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -17,7 +17,8 @@ export function Sidebar() {
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard, show: true },
     { name: "Analytics", href: "/admin/analytics", icon: BarChart3, show: true },
-    { name: "Data Entry", href: "/admin/entry", icon: Printer, show: true },
+    { name: "Entry Mingguan", href: "/admin/entry", icon: Printer, show: true },
+    { name: "Entry Bulanan", href: "/admin/entry-monthly", icon: CalendarRange, show: true },
     { name: "Users", href: "/admin/users", icon: Users, show: isAdmin },
     { name: "Settings", href: "/admin/settings", icon: Settings, show: isAdmin || session?.user?.role === "LEADER" },
   ];

@@ -14,10 +14,11 @@ model User {
   password  String
   email     String?
   isHidden  Boolean  @default(false)
-  role      Role     @default(USER)
-  records   Record[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role           Role            @default(USER)
+  records        Record[]
+  monthlyRecords MonthlyRecord[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 enum Role {
@@ -71,4 +72,24 @@ model ReportFile {
   createdAt DateTime @default(now())
   
   @@unique([month, year, category, week])
+}
+
+model MonthlyRecord {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month      Int       // 1-12
+  year       Int      
+  startDate  DateTime? // Tanggal mulai tarikan (misal: 1 Oktober)
+  endDate    DateTime? // Tanggal akhir tarikan (misal: 31 Oktober)
+  category   Category  // PRINT, COPY, SCAN
+  colorMode  ColorMode // BW, COLOR
+  
+  startMeter Int?      // Nilai meteran awal bulan
+  endMeter   Int?      // Nilai meteran akhir bulan
+  
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  
+  @@unique([userId, month, year, category, colorMode])
 }
